@@ -147,7 +147,7 @@ Baseado nas análises que fizemos, podemos observar uma hierarquia clara na qual
     \item \textbf{Modelos de baseline}: Performance inferior com RMSE elevado (6.300-10.606)
 \end{itemize}
 
-O SARIMAX destacou-se por atender aos critérios de ausência de autocorrelação e média zero, embora apresente problemas de normalidade e heterocedasticidade. 
+O SARIMAX destacou-se por atender aos critérios de ausência de autocorrelação e média zero, embora apresente problemas de normalidade e heterocedasticidade. Ele foi escolhido, pois o modelo OLS não captava as características variacionais dos dados.
 
 Apesar do bom desempenho do SARIMAX, a falha no teste de normalidade sugere que transformações nos dados ou ajustes na especificação do modelo podem melhorar ainda mais sua performance. Para o modelo de Regression, a presença de autocorrelação indica a necessidade de incorporar componentes autorregressivos ou usar erros padrão robustos.
 
