@@ -3,8 +3,8 @@ Model 1: SARIMAX (0,1,1) x (0,1,1,52)  AIC=83.05  BIC=87.36
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(0, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -38.527
-Date:                            Thu, 02 Oct 2025   AIC                             83.054
-Time:                                    11:32:40   BIC                             87.356
+Date:                            Sun, 05 Oct 2025   AIC                             83.054
+Time:                                    18:24:30   BIC                             87.356
 Sample:                                         0   HQIC                            84.456
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -31,8 +31,8 @@ Model 2: SARIMAX (2,1,0) x (1,1,0,52)  AIC=83.86  BIC=89.60
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(2, 1, 0)x(1, 1, 0, 52)   Log Likelihood                 -37.930
-Date:                            Thu, 02 Oct 2025   AIC                             83.861
-Time:                                    11:32:40   BIC                             89.597
+Date:                            Sun, 05 Oct 2025   AIC                             83.861
+Time:                                    18:24:30   BIC                             89.597
 Sample:                                         0   HQIC                            85.731
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -60,8 +60,8 @@ Model 3: SARIMAX (2,1,1) x (0,1,1,52)  AIC=84.28  BIC=91.45
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(2, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -37.142
-Date:                            Thu, 02 Oct 2025   AIC                             84.284
-Time:                                    11:32:40   BIC                             91.453
+Date:                            Sun, 05 Oct 2025   AIC                             84.284
+Time:                                    18:24:30   BIC                             91.453
 Sample:                                         0   HQIC                            86.621
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -72,7 +72,7 @@ ar.L1          0.9755      0.189      5.173      0.000       0.606       1.345
 ar.L2         -0.1814      0.186     -0.976      0.329      -0.546       0.183
 ma.L1         -1.0000      0.052    -19.365      0.000      -1.101      -0.899
 ma.S.L52       0.2694      0.200      1.346      0.178      -0.123       0.662
-sigma2         0.6336      0.164      3.854      0.000       0.311       0.956
+sigma2         0.6336      0.164      3.855      0.000       0.311       0.956
 ===================================================================================
 Ljung-Box (L1) (Q):                   0.00   Jarque-Bera (JB):                 0.84
 Prob(Q):                              0.95   Prob(JB):                         0.66
@@ -90,15 +90,15 @@ Model 4: SARIMAX (1,1,1) x (0,1,1,52)  AIC=84.74  BIC=90.48
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(1, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -38.371
-Date:                            Thu, 02 Oct 2025   AIC                             84.743
-Time:                                    11:32:40   BIC                             90.479
+Date:                            Sun, 05 Oct 2025   AIC                             84.743
+Time:                                    18:24:30   BIC                             90.479
 Sample:                                         0   HQIC                            86.612
                                             - 138                                         
 Covariance Type:                           approx                                         
 ==============================================================================
                  coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-ar.L1          0.5193      0.639      0.813      0.416      -0.733       1.771
+ar.L1          0.5194      0.639      0.813      0.416      -0.732       1.771
 ma.L1         -0.4057      0.652     -0.622      0.534      -1.684       0.873
 ma.S.L52       0.2740      0.225      1.218      0.223      -0.167       0.715
 sigma2         0.6924      0.176      3.929      0.000       0.347       1.038
@@ -119,8 +119,8 @@ Model 5: SARIMAX (0,1,0) x (0,1,1,52)  AIC=84.95  BIC=87.88
 ============================================================================================
 Dep. Variable:                               volume   No. Observations:                  138
 Model:             SARIMAX(0, 1, 0)x(0, 1, [1], 52)   Log Likelihood                 -40.474
-Date:                              Thu, 02 Oct 2025   AIC                             84.949
-Time:                                      11:32:40   BIC                             87.880
+Date:                              Sun, 05 Oct 2025   AIC                             84.949
+Time:                                      18:24:30   BIC                             87.880
 Sample:                                           0   HQIC                            85.920
                                               - 138                                         
 Covariance Type:                             approx                                         
