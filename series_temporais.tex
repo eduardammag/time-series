@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage[a4paper, margin=2cm]{geometry} % <-- Adiciona esta linha
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
 
@@ -23,7 +24,7 @@
         \vspace{0.2cm}
         {\Huge \textbf{Análise de Séries Temporais}} \\
         \vspace{0.2cm}
-        \vspace{0.5cm}\\
+        \vspace{0.5cm}
         {\Large \textbf{A1 - Séries Temporais}}\\
         \rule{1\textwidth}{0.4pt} % Linha horizontal personalizada
 
@@ -60,16 +61,14 @@
     \end{center}
 \end{titlepage}
 
-\section{Discussão sobre métricas e métodos de avaliação}
+\section*{Discussão sobre métricas e métodos de avaliação}
 
-Para previsões pontuais temos dois grupos de métricas e avaliação:
-\begin{itemize}
-    \item Métricas percentuais;
-    \item Métricas envolvendo escala: escaladas e dependentes de escala;
-\end{itemize}
-Métricas percentuais são adequadas para cenários em que os valores devem ter ordem de grandeza clara e consistente, e mais importante assumir valores distantes de zero, causando distorções quando $y_t \to 0, \dfrac{e_t}{y_t} \to \infty$.
+Para previsões pontuais temos dois grupos de métricas e avaliação: métricas percentuais e métricas absolutas.
 
- Primeiramente, mais um terço dos dados assume valores menores que 1, o intervalo que mais sofre com a distorção. Outro ponto, o intervalo dos dados $[0.14 , 16.59]$ não representa uma escala de grandeza bem compreendida, e com esses argumentos concluímos que métricas percentuais não são convenientes para nossos dados.
+Métricas percentuais são adequadas para cenários em que os valores devem ter ordem de grandeza consistente, e mais importante assumir valores distantes de zero, evitando distorções. 
+
+Em uma primeira análise, observa-se que mais de um terço dos dados está no intervalo sujeito a distorções. O intervalo total dos valores é $[0.14, 16.59]$. No entanto, como esses dados potenicialmente distorcidos concentram-se apenas no início e reservamos o final da série para previsões fora do treino, essa limitação, que normalmente inviabilizaria o uso de métricas percentuais, não compromete a análise e tais métricas serão usadas ao longo da análise.
+
 
 \begin{figure}[h]
     \centering
@@ -78,66 +77,42 @@ Métricas percentuais são adequadas para cenários em que os valores devem ter 
     % \label{fig:placeholder}
 \end{figure}
 
-Métricas escaladas e métricas dependentes de escala são parecidas, mas não iguais. As métricas escaladas ajustam o erro pela magnitude dos dados, erros sem medida e mais comparáveis entre problemas distintos. Já as métricas dependentes mantêm o erro na mesma unidade da variável alvo.
-
-No nosso experimento, utilizamos o mesmo conjunto de dados para testar múltiplos modelos, assim optamos por métricas escaladas. Elas facilitam a interpretação, especialmente por públicos leigos, e permitem comparações mais intuitivas, é mais claro dizer que o modelo 1 teve 10\% de melhora em relação ao modelo 2, do que comparar erros absolutos como 5 e 5,5 na variável "volume", cujas unidades não temos familiaridade.
-
-Com isso em mente, vamos utilizar para previsões pontuais o MASE:
-
-$$MASE = \dfrac{\text{MAE do modelo}}{\text{MAE do modelo de referência}}$$
-
-Um exemplo numérico, o MAE do seu modelo foi 4.2 e  o MAE do modelo referência foi 6.0, então $MASE
-=\frac{4.2}{6.0}= 0.7$. Isso significa que seu modelo erra 30\% menos do que a referência.
+Ademais, serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada.
 
 Embora o foco até aqui tenha sido a avaliação de previsões pontuais, também serão abordadas previsões distribucionais, o ponto mais importante dessa avaliação é incorporar a incerteza associada às estimativas.
 Para isso, derivamos distribuições preditivas a partir da análise dos resíduos dos modelos, assumindo que seguem uma distribuição normal. Essa abordagem possibilita a construção de intervalos de predição e a utilização de métricas específicas para avaliação probabilística, como o CRPS e o Winkler Score.
-\begin{itemize}
-    \item \textbf{CRPS}: compara a função de distribuição acumulada (CDF) da previsão com o valor observado. Matematicamente, ele mede a área entre a CDF predita (F(x)) e a CDF empírica do valor observado.
-    $$CRPS(F, y_t) = \int_{-\infty}^{\infty}(F(x)- \mathbb{1}(x \geq y_t))^2 dx $$
-    \item \textbf{Winkler Score}: qualidade dos intervalos de predição gerados por um modelo, penaliza tanto a não cobertura do valor real quanto intervalos excessivamente amplos.
 
-    $$
-W_{\alpha, t} = 
-\begin{cases}
-(u_{\alpha, t} - l_{\alpha, t}) + \frac{2}{\alpha} (l_{\alpha, t} - y_t), & \text{se } y_t < l_{\alpha, t} \\
-(u_{\alpha, t} - l_{\alpha, t}), & \text{se } l_{\alpha, t} \leq y_t \leq u_{\alpha, t} \\
-(u_{\alpha, t} - l_{\alpha, t}) + \frac{2}{\alpha} (y_t - u_{\alpha, t}), & \text{se } y_t > u_{\alpha, t}
-\end{cases}
-    $$
-\end{itemize}
+\section*{Discussão sobre a necessidade de transformação de variáveis}
 
 
-\section{Discussão sobre a necessidade de transformação de variáveis}
+\section*{Discussão sobre a necessidade de decomposição entre tendência e sazonalidade}
 
-
-\section{Discussão sobre a necessidade de decomposição entre tendência e sazonalidade}
-
-\section{Análises de resíduos e ajuste dos modelos}
-\section{Modelos baselines}
+\section*{Análises de resíduos e ajuste dos modelos}
+\section*{Modelos baselines}
 
 Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline, cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
 
-\subsection{Mean Method}
+\subsection*{Mean Method}
 Este é o baseline mais simples, onde a previsão para qualquer período futuro é a média de todos os valores observados no conjunto de treino.
 $$ \hat{y}_{T+h|T} = \bar{y} = \frac{1}{T}\sum_{t=1}^{T}y_t $$
 
-\subsection{Naive Method}
+\subsection*{Naive Method}
 Neste método, a previsão para o próximo período é simplesmente o último valor observado.
 $$ \hat{y}_{T+h|T} = y_T $$
 
-\subsection{Seasonal Naive}
+\subsection*{Seasonal Naive}
 Uma variação do Naive Method, útil para séries com forte sazonalidade. Ele prevê o valor futuro utilizando a observação do mesmo período no ciclo sazonal anterior. Utilizamos dados semanis considerando sazonalidade anual, o período é $m=52$.
 $$ \hat{y}_{T+h|T} = y_{T+h-m} $$
 
-\subsection{Drift Method}
+\subsection*{Drift Method}
 Este método é uma extensão do Naive e é adequado para séries com tendência. Ele extrapola uma linha traçada entre a primeira e a última observação do conjunto de treino. A previsão incorpora uma "inclinação" (drift) média.
 $$ \hat{y}_{T+h|T} = y_T + h \left( \frac{y_T - y_1}{T-1} \right) $$
 
-\subsection{Média Móvel}
+\subsection*{Média Móvel}
 A previsão é calculada como a média dos últimos $K$ valores observados no conjunto de treino. Este método suaviza flutuações de curto prazo. Para este estudo, foi utilizado $K=4$.
 $$ \hat{y}_{T+h|T} = \frac{1}{K}\sum_{t=T-K+1}^{T}y_t $$
 
-\subsection{Resultados e Análise}
+\subsection*{Resultados e Análise}
 Os modelos foram treinados com os primeiros 120 pontos da série e avaliados nos 30 pontos subsequentes. Os resultados obtidos para as métricas de erro no conjunto de teste estão consolidados na Tabela 1.
 
 \begin{table}[h]
@@ -161,6 +136,66 @@ Analisando a Tabela \ref{tab:baseline_results}, o \textbf{Drift Mathod} apresent
 
 O desempenho do modelo de Drift estabelece, portanto, o principal benchmark a ser superado pelos modelos mais complexos que serão analisados nas próximas seções.
 
-\section{Modelos de regressão linear múltipla}
+\section*{Modelos de Regressão}
+
+Foi realizada uma análise completa de séries temporais utilizando dois enfoques principais: \textbf{Regressão Linear Múltipla (OLS)} e \textbf{modelos SARIMAX}. O objetivo geral foi capturar componentes de tendência, sazonalidade e autocorrelação, além de comparar o desempenho preditivo entre os modelos.
+
+\subsection*{Regressão Linear Múltipla (OLS)}
+O modelo OLS considerou a variável dependente \texttt{volume}, com preditores que representam a tendência temporal (\texttt{t}), harmônicos sazonais (\texttt{sin1}, \texttt{cos1}, \texttt{sin2}, \texttt{cos2}) e dummies mensais (\texttt{m\_2} a \texttt{m\_12}).  
+O objetivo foi ajustar um modelo interpretável capaz de representar tendência e sazonalidade. O diagnóstico de resíduos incluiu ACF/PACF, histograma, QQ-Plot e teste de Ljung-Box. As métricas de desempenho utilizadas foram \textbf{RMSE} e \textbf{MAPE}, calculadas sobre o conjunto de teste (últimas 12 semanas). Como veremos mais a frente, na análise de resíduos, o modelo OLS não capturou adequadamente a estrutura dos dados.
+
+\begin{table}[h!]
+\centering
+% \caption{Resultados da Regressão OLS}
+\begin{tabular}{ll}
+\hline
+\textbf{Variável} & \textbf{Valor} \\
+\hline
+Dep. Variable       & volume \\
+No. Observations    & 150 \\
+Df Residuals        & 133 \\
+Df Model            & 16 \\
+R-squared           & 0.806 \\
+Adj. R-squared      & 0.783 \\
+F-statistic         & 34.61 \\
+Prob (F-statistic)  & 1.50e-39 \\
+AIC                 & 632.3 \\
+BIC                 & 683.5 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Modelos SARIMAX}
+Como os resultados do OLS não se mostraram promissores, pesquisamos outros modelos de regressão mais robustos que pudessem melhorar o desempenho nesses dados. Os modelos SARIMAX foram empregados para capturar dependências temporais não explicadas pela regressão, incluindo componentes autorregressivos (AR), de média móvel (MA) e sazonais (P, D, Q, m).  
+A seleção de parâmetros foi realizada via \texttt{auto\_arima} e grid search manual. Foram aplicados os mesmos diagnósticos de resíduos e métricas de avaliação (RMSE, MAPE), além de critérios de informação \textbf{AIC} e \textbf{BIC}. O melhor resultado foi
+o SARIMAX (0,1,1) x (0,1,1,52) (AIC=83.05, BIC=87.36)
+
+\subsection*{Comparação e Resultados}
+Os resultados comparativos mostraram que o modelo OLS não o  capturou adequadamente a estrutura dos dados e tenho um erro maior, enquanto o SARIMAX apresenta melhor ajuste em termos de dependência temporal e critérios de informação, como podemos ver pelo gráfico e pelos erros comparados.  
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Modelo}  & \textbf{RMSE} & \textbf{MAPE (\%)} \\
+        \hline
+        OLS & 5.1834 & 0.3303 \\
+        SARIMAX  & 3.2793 & 0.2212 \\
+        \hline
+    \end{tabular}
+    % \caption{Resultados dos Modelos de regressão no Conjunto de Teste.}
+    \label{tab:baseline_results}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/forecast_comparison.png}
+    % \caption{Histograma e distribuição dos valores}
+    % \label{fig:placeholder}
+\end{figure}
+
+
+
+
 
 \end{document}
