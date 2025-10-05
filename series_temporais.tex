@@ -2,6 +2,7 @@
 \usepackage[a4paper, margin=2cm]{geometry} % <-- Adiciona esta linha
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
+\usepackage{float} % For [H] float placement
 
 \title{Séries temporais}
 \author{Mariana Fernandes Rocha}
@@ -133,6 +134,42 @@ Após a decomposição, a série ajustada sazonalmente mostrou-se muito semelhan
 \vspace{1em}
 
 \section*{Análises de resíduos e ajuste dos modelos}
+
+Criamos uma classe chamada \texttt{ResidualAnalysis} que implementa uma análise completa e sistemática de resíduos para modelos de séries temporais, utilizando uma abordagem estatística rigorosa para avaliar a qualidade dos modelos preditivos. O código realiza três tipos principais de análise: testes estatísticos formais, análise gráfica abrangente e diagnóstico comparativo entre modelos.
+
+\subsection*{Metodologia da Análise}
+
+A análise inicia com testes estatísticos formais que avaliam quatro pressupostos fundamentais: normalidade dos resíduos (teste Anderson-Darling), ausência de autocorrelação (Ljung-Box e Durbin-Watson), homocedasticidade (teste ARCH) e média zero (teste t). Paralelamente, são gerados 12 gráficos diagnósticos que permitem a visualização multidimensional dos resíduos, incluindo ACF/PACF, Q-Q plots, resíduos versus valores ajustados, e distribuições comparativas.
+
+\subsection*{Comparação entre Modelos}
+
+Baseado nas análises que fizemos, podemos observar uma hierarquia clara na qualidade dos modelos:
+
+\begin{itemize}
+    \item \textbf{SARIMAX}: Melhor desempenho geral (pontuação: 1.998) com RMSE mais baixo (0.675)
+    \item \textbf{Regression}: Performance intermediária (pontuação: 0.000) com RMSE moderado (1.404)
+    \item \textbf{Modelos de baseline}: Performance inferior com RMSE elevado (6.300-10.606)
+\end{itemize}
+
+O SARIMAX destacou-se por atender aos critérios de ausência de autocorrelação e média zero, embora apresente problemas de normalidade e heterocedasticidade. 
+
+\subsection*{Recomendações e Considerações}
+
+Apesar do bom desempenho do SARIMAX, a falha no teste de normalidade sugere que transformações nos dados ou ajustes na especificação do modelo podem melhorar ainda mais sua performance. Para o modelo de Regression, a presença de autocorrelação indica a necessidade de incorporar componentes autorregressivos ou usar erros padrão robustos.
+
+A análise comparativa demonstra que modelos mais sofisticados que incorporam estrutura temporal (SARIMAX) superam significativamente tanto modelos de regressão convencionais quanto abordagens de baseline, destacando a importância de considerar a dependência temporal na modelagem. As análises completas dos outros modelos podem ser verificadas no arquivo ipynb.
+
+\subsection*{Análise do Melhor Modelo: SARIMAX}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/sarimax_analisado.png}
+    \caption{Análise completa de resíduos do modelo SARIMAX}
+    \label{fig:sarimax_residuals}
+\end{figure}
+
+
+
 \section*{Modelos baselines}
 
 Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline, cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
