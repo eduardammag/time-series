@@ -20,7 +20,7 @@
         \vspace{2cm}
 
         \rule{1\textwidth}{0.4pt} \\ % Linha horizontal personalizada
-        \vspace{0.3cm}
+        \vspace{0.2cm}
         {\Huge \textbf{Análise de Séries Temporais}} \\
         \vspace{0.2cm}
         \vspace{0.5cm}\\
@@ -115,11 +115,52 @@ W_{\alpha, t} =
 \section{Análises de resíduos e ajuste dos modelos}
 \section{Modelos baselines}
 
+Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline, cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
+
+\subsection{Mean Method}
+Este é o baseline mais simples, onde a previsão para qualquer período futuro é a média de todos os valores observados no conjunto de treino.
+$$ \hat{y}_{T+h|T} = \bar{y} = \frac{1}{T}\sum_{t=1}^{T}y_t $$
+
+\subsection{Naive Method}
+Neste método, a previsão para o próximo período é simplesmente o último valor observado.
+$$ \hat{y}_{T+h|T} = y_T $$
+
+\subsection{Seasonal Naive}
+Uma variação do Naive Method, útil para séries com forte sazonalidade. Ele prevê o valor futuro utilizando a observação do mesmo período no ciclo sazonal anterior. Utilizamos dados semanis considerando sazonalidade anual, o período é $m=52$.
+$$ \hat{y}_{T+h|T} = y_{T+h-m} $$
+
+\subsection{Drift Method}
+Este método é uma extensão do Naive e é adequado para séries com tendência. Ele extrapola uma linha traçada entre a primeira e a última observação do conjunto de treino. A previsão incorpora uma "inclinação" (drift) média.
+$$ \hat{y}_{T+h|T} = y_T + h \left( \frac{y_T - y_1}{T-1} \right) $$
+
+\subsection{Média Móvel}
+A previsão é calculada como a média dos últimos $K$ valores observados no conjunto de treino. Este método suaviza flutuações de curto prazo. Para este estudo, foi utilizado $K=4$.
+$$ \hat{y}_{T+h|T} = \frac{1}{K}\sum_{t=T-K+1}^{T}y_t $$
+
+\subsection{Resultados e Análise}
+Os modelos foram treinados com os primeiros 120 pontos da série e avaliados nos 30 pontos subsequentes. Os resultados obtidos para as métricas de erro no conjunto de teste estão consolidados na Tabela 1.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Modelo} & \textbf{MAE} & \textbf{RMSE} & \textbf{MAPE (\%)} \\
+        \hline
+        Drift & 3.9666 & 4.6585 & 34.40 \\
+        Seasonal Naive & 4.7593 & 5.4027 & 44.01 \\
+        Naive & 4.6803 & 5.4411 & 40.79 \\
+        Média móvel (k=4) & 5.0153 & 5.7318 & 44.20 \\
+        Mean & 7.9639 & 8.4335 & 74.25 \\
+        \hline
+    \end{tabular}
+    \caption{Resultados dos Modelos Baseline no Conjunto de Teste.}
+    \label{tab:baseline_results}
+\end{table}
+
+Analisando a Tabela \ref{tab:baseline_results}, o \textbf{Drift Mathod} apresentou o melhor desempenho em todas as métricas, com um RMSE de 4.6585. Isso sugere que a série possui uma componente de tendência linear que é capturada de forma eficaz por este método. Os modelos Naive e Seasonal Naive tiveram performances intermediárias e muito similares, indicando que tanto a dependência do último ponto quanto a sazonalidade anual são características relevantes, mas secundárias à tendência geral. O Mean Method foi o que obteve o pior resultado, o que era esperado para uma série não estacionária com tendência.
+
+O desempenho do modelo de Drift estabelece, portanto, o principal benchmark a ser superado pelos modelos mais complexos que serão analisados nas próximas seções.
+
 \section{Modelos de regressão linear múltipla}
-
-
-
-
-
 
 \end{document}
