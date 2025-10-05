@@ -62,14 +62,12 @@
 
 \section{Discussão sobre métricas e métodos de avaliação}
 
-Para previsões pontuais temos dois grupos de métricas e avaliação:
-\begin{itemize}
-    \item Métricas percentuais;
-    \item Métricas envolvendo escala: escaladas e dependentes de escala;
-\end{itemize}
-Métricas percentuais são adequadas para cenários em que os valores devem ter ordem de grandeza clara e consistente, e mais importante assumir valores distantes de zero, causando distorções quando $y_t \to 0, \dfrac{e_t}{y_t} \to \infty$.
+Para previsões pontuais temos dois grupos de métricas e avaliação: métricas percentuais e métricas absolutas.
 
- Primeiramente, mais um terço dos dados assume valores menores que 1, o intervalo que mais sofre com a distorção. Outro ponto, o intervalo dos dados $[0.14 , 16.59]$ não representa uma escala de grandeza bem compreendida, e com esses argumentos concluímos que métricas percentuais não são convenientes para nossos dados.
+Métricas percentuais são adequadas para cenários em que os valores devem ter ordem de grandeza consistente, e mais importante assumir valores distantes de zero, evitando distorções. 
+
+Em uma primeira análise, observa-se que mais de um terço dos dados está no intervalo sujeito a distorções. O intervalo total dos valores é $[0.14, 16.59]$. No entanto, como esses dados potenicialmente distorcidos concentram-se apenas no início e reservamos o final da série para previsões fora do treino, essa limitação, que normalmente inviabilizaria o uso de métricas percentuais, não compromete a análise e tais métricas serão usadas ao longo da análise.
+
 
 \begin{figure}[h]
     \centering
@@ -78,34 +76,10 @@ Métricas percentuais são adequadas para cenários em que os valores devem ter 
     % \label{fig:placeholder}
 \end{figure}
 
-Métricas escaladas e métricas dependentes de escala são parecidas, mas não iguais. As métricas escaladas ajustam o erro pela magnitude dos dados, erros sem medida e mais comparáveis entre problemas distintos. Já as métricas dependentes mantêm o erro na mesma unidade da variável alvo.
-
-No nosso experimento, utilizamos o mesmo conjunto de dados para testar múltiplos modelos, assim optamos por métricas escaladas. Elas facilitam a interpretação, especialmente por públicos leigos, e permitem comparações mais intuitivas, é mais claro dizer que o modelo 1 teve 10\% de melhora em relação ao modelo 2, do que comparar erros absolutos como 5 e 5,5 na variável "volume", cujas unidades não temos familiaridade.
-
-Com isso em mente, vamos utilizar para previsões pontuais o MASE:
-
-$$MASE = \dfrac{\text{MAE do modelo}}{\text{MAE do modelo de referência}}$$
-
-Um exemplo numérico, o MAE do seu modelo foi 4.2 e  o MAE do modelo referência foi 6.0, então $MASE
-=\frac{4.2}{6.0}= 0.7$. Isso significa que seu modelo erra 30\% menos do que a referência.
+Ademais, serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada.
 
 Embora o foco até aqui tenha sido a avaliação de previsões pontuais, também serão abordadas previsões distribucionais, o ponto mais importante dessa avaliação é incorporar a incerteza associada às estimativas.
 Para isso, derivamos distribuições preditivas a partir da análise dos resíduos dos modelos, assumindo que seguem uma distribuição normal. Essa abordagem possibilita a construção de intervalos de predição e a utilização de métricas específicas para avaliação probabilística, como o CRPS e o Winkler Score.
-\begin{itemize}
-    \item \textbf{CRPS}: compara a função de distribuição acumulada (CDF) da previsão com o valor observado. Matematicamente, ele mede a área entre a CDF predita (F(x)) e a CDF empírica do valor observado.
-    $$CRPS(F, y_t) = \int_{-\infty}^{\infty}(F(x)- \mathbb{1}(x \geq y_t))^2 dx $$
-    \item \textbf{Winkler Score}: qualidade dos intervalos de predição gerados por um modelo, penaliza tanto a não cobertura do valor real quanto intervalos excessivamente amplos.
-
-    $$
-W_{\alpha, t} = 
-\begin{cases}
-(u_{\alpha, t} - l_{\alpha, t}) + \frac{2}{\alpha} (l_{\alpha, t} - y_t), & \text{se } y_t < l_{\alpha, t} \\
-(u_{\alpha, t} - l_{\alpha, t}), & \text{se } l_{\alpha, t} \leq y_t \leq u_{\alpha, t} \\
-(u_{\alpha, t} - l_{\alpha, t}) + \frac{2}{\alpha} (y_t - u_{\alpha, t}), & \text{se } y_t > u_{\alpha, t}
-\end{cases}
-    $$
-\end{itemize}
-
 
 \section{Discussão sobre a necessidade de transformação de variáveis}
 
