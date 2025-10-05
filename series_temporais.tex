@@ -85,10 +85,52 @@ Para isso, derivamos distribuições preditivas a partir da análise dos resídu
 
 \section*{Discussão sobre a necessidade de transformação de variáveis}
 
-=======
->>>>>>> 861c93aaf5d6df808ebe516a749c07bcaae03af9
+A série apresentada exibe um comportamento \textbf{claramente crescente ao longo do tempo}, com oscilações cada vez mais amplas a partir de 2024. Esse padrão indica a presença de \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
 
-\section*{Discussão sobre a necessidade de decomposição entre tendência e sazonalidade}
+Nesses casos, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}.  
+Usamos a transformação logarítmica cujos efeitos benéficos são:
+
+\begin{itemize}
+    \item \textbf{Estabiliza a variância} — reduzindo as oscilações relativas nos períodos de maior valor;
+    \item \textbf{Diminui a assimetria da distribuição} dos dados, aproximando-a de uma forma mais normal;
+    \item \textbf{Facilita a identificação de padrões estruturais} como tendência e sazonalidade;
+    \item \textbf{Torna a relação entre componentes mais aditiva}, melhorando o ajuste de modelos lineares como ARIMA, ETS ou regressão temporal.
+\end{itemize}
+
+No caso da série de volume semanal, a transformação é fundamental para corrigir o comportamento multiplicativo observado, permitindo uma análise mais robusta e previsões mais consistentes.
+
+\vspace{1em}
+
+\section*{Discussão sobre a decomposição entre tendência e sazonalidade}
+
+A série apresenta \textbf{um padrão de tendência crescente} e \textbf{flutuações sazonais bem definidas}, com picos e vales que se repetem em intervalos semelhantes. Esse comportamento indica a presença de dois componentes estruturais importantes: a \textbf{tendência de longo prazo} ($T_t$) e a \textbf{sazonalidade periódica} ($S_t$). Assim, a série pode ser representada por:
+\[
+y_t = T_t + S_t + R_t
+\]
+onde $R_t$ é o componente residual ou ruído.
+
+A \textbf{decomposição dessa série temporal} é necessária para:
+
+\begin{itemize}
+    \item \textbf{Isolar a tendência estrutural}, revelando o crescimento sustentado do volume ao longo do tempo;
+    \item \textbf{Identificar padrões sazonais}, observando períodos recorrentes de alta e baixa que podem estar relacionados a ciclos semanais, mensais ou anuais;
+    \item \textbf{Remover o efeito da sazonalidade} para ajustar modelos de previsão que dependem de uma estrutura estacionária;
+    \item \textbf{Analisar o componente residual}, que expressa as variações aleatórias não explicadas pelos outros fatores.
+\end{itemize}
+
+Após a decomposição, a série ajustada sazonalmente mostrou-se muito semelhante à série original o que indica que a tendência sobrepõe a sazonalidade na série temporal em questão, há pouca ou nenhuma sazonalidade.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/serie_transformada.png}
+    \label{fig:serie-transformada}
+
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/serie_ajustada_sazonalmente.png}
+    \label{fig:serie-ajustada-sazonalmente}
+\end{figure}
+
+\vspace{1em}
 
 \section*{Análises de resíduos e ajuste dos modelos}
 \section*{Modelos baselines}
