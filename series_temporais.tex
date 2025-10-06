@@ -2,6 +2,7 @@
 \usepackage[a4paper, margin=2cm]{geometry} % <-- Adiciona esta linha
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{float} % For [H] float placement
 
 \title{Séries temporais}
@@ -79,10 +80,6 @@ Em uma primeira análise, observa-se que mais de um terço dos dados está no in
 \end{figure}
 
 Ademais, serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada.
-
-Embora o foco até aqui tenha sido a avaliação de previsões pontuais, também serão abordadas previsões distribucionais, o ponto mais importante dessa avaliação é incorporar a incerteza associada às estimativas.
-Para isso, derivamos distribuições preditivas a partir da análise dos resíduos dos modelos, assumindo que seguem uma distribuição normal. Essa abordagem possibilita a construção de intervalos de predição e a utilização de métricas específicas para avaliação probabilística, como o CRPS e o Winkler Score.
-<<<<<<< HEAD
 
 \section*{Discussão sobre a necessidade de transformação de variáveis}
 
@@ -267,6 +264,10 @@ Os resultados comparativos mostraram que o modelo OLS não o  capturou adequadam
     % \caption{Histograma e distribuição dos valores}
     % \label{fig:placeholder}
 \end{figure}
+
+\subsection*{Repositório Github}
+
+Link: \href{https://github.com/eduardammag/time-series/tree/main}{Github}
 
 
 
