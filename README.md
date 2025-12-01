@@ -1,6 +1,6 @@
-Análise de Séries Temporais — A1
+Análise de Séries Temporais
 
-Este repositório contém o material e o relatório referente ao Trabalho A1 da disciplina de Séries Temporais.
+Este repositório contém o material e o relatório referente ao trabalho de A1 e A2 da disciplina de Séries Temporais.
 
 O projeto tem como objetivo realizar uma análise completa de uma série temporal, abordando desde a escolha e justificativa das métricas de avaliação até a comparação de modelos de previsão.
 
@@ -42,9 +42,9 @@ Utilizando co-variáveis derivadas de week e volume, avaliadas pelas métricas M
 
 Clone o repositório:
 ```
-git clone https://github.com/eduardammag/time-series.gitA1-Series-Temporais.git
+git clone https://github.com/eduardammag/time-series-A1.git
 
-cd A1-Series-Temporais
+cd time-series-A1
 ```
 
 
