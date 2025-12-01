@@ -36,7 +36,7 @@ A Figura \ref{fig:baselines_comparison} ilustra o comportamento de todos os mode
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.55\textwidth]{baselines_comparison.png}
+    \includegraphics[width=1\textwidth]{baselines_comparison.png}
     \caption{Comparação visual de todos os modelos baseline no último fold de validação. A linha preta representa os dados de treino, a linha vermelha os valores reais do teste, e as linhas tracejadas coloridas representam as previsões de cada modelo baseline.}
     \label{fig:baselines_comparison}
 \end{figure}
@@ -64,6 +64,27 @@ Os resultados obtidos para as métricas de erro, calculados como a média sobre 
 
 O modelo com melhor desempenho (\textbf{Drift Method}) foi selecionado para uma análise de resíduos detalhada, apresentada na próxima subseção.
 
+Para aplicações práticas, saber a margem de erro é tão importante quanto a previsão em si. Avaliamos os intervalos de confiança (IC) de 95\% gerados pelo Drift Method utilizando métricas probabilísticas robustas. A Figura \ref{fig:drift_ci} apresenta a previsão visual juntamente com a faixa de incerteza estimada.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{Driftconfidence.png}
+    \caption{Previsão \textit{one-step-ahead} do Drift Method no último fold, exibindo o Intervalo de Confiança de 95\% (área sombreada). A caixa de texto destaca as métricas de calibração do intervalo.}
+    \label{fig:drift_ci}
+\end{figure}
+
+As métricas obtidas demonstram que o estimador de incerteza do Drift Method é confiável:
+
+\begin{itemize}
+    \item \textbf{Cobertura (Coverage):} O modelo obteve \textbf{93.33\%} de cobertura, valor muito próximo do ideal teórico de 95\%. Isso significa que, em 93\% das semanas, o valor real de volume caiu dentro da faixa prevista, indicando um modelo bem calibrado (nem excessivamente confiante, nem conservador demais).
+    
+    \item \textbf{Winkler Score (10.69):} Este score penaliza intervalos largos que não capturam o valor real. O valor baixo obtido, em conjunto com a alta cobertura, sugere que o modelo consegue manter o intervalo "estreito o suficiente" para ser útil (Largura Média $\approx$ 8.53) sem sacrificar a precisão.
+    
+    \item \textbf{Violação (6.67\%):} A taxa de violação está marginalmente acima dos 5\% esperados, o que é aceitável para um modelo baseline.
+\end{itemize}
+
+Esta validação da incerteza reforça a escolha do Drift Method como um benchmark sólido: ele não apenas prevê a tendência corretamente, mas também fornece uma estimativa de risco realista para o negócio.
+
 \subsection*{Análise de Resíduos do Melhor Modelo (Drift)}
 
 A análise de resíduos do melhor modelo baseline foi realizada em três etapas:
@@ -72,21 +93,21 @@ A análise de resíduos do melhor modelo baseline foi realizada em três etapas:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{residuo.png}
-    \caption{Caption}
+    \includegraphics[width=1\linewidth]{residuo.png}
+    \caption{Série Temporal dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
 \textbf{2. Normalidade dos Resíduos:} A análise de normalidade através do histograma e gráfico Q-Q revelou desvios em relação à distribuição normal, especialmente nas caudas. Testes estatísticos confirmaram a rejeição da hipótese de normalidade, indicando que, embora o modelo capture a tendência central (média), ele pode não capturar perfeitamente os eventos extremos.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{normalidade.png}
-    \caption{Caption}
+    \includegraphics[width=1\linewidth]{normalidade.png}
+    \caption{Normalidade dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
 \textbf{3. Autocorrelação dos Resíduos:} A análise de autocorrelação (ACF) mostrou correlação serial significativa em alguns lags iniciais. Isso era esperado para um modelo baseline simples e indica que há estrutura temporal de curto prazo remanescente que não foi capturada apenas pela tendência linear do Drift. \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\linewidth]{autocorrelacao.png}
-    \caption{Caption}
+    \includegraphics[width=1\linewidth]{autocorrelacao.png}
+    \caption{Autocorrelação dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
 \subsection*{Transformação Box-Cox e Heteroscedasticidade}
