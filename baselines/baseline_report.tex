@@ -25,19 +25,19 @@ Para avaliar o desempenho dos modelos de forma robusta, foi empregada a técnica
 
 \begin{itemize}
     \item \textbf{Janela inicial de treino:} 120 observações
-    \item \textbf{Horizonte de previsão:} 30 pontos por fold
+    \item \textbf{Horizonte de previsão:} 4 pontos por fold
     \item \textbf{Passo de deslocamento:} 1 observação entre folds consecutivos
-    \item \textbf{Número de folds:} 8 folds
+    \item \textbf{Número de folds:} 34 folds
 \end{itemize}
 
-Em cada fold, o modelo é treinado com os dados até o ponto de corte e realiza previsões \textit{one-step-ahead rolling forecast} para o horizonte de 30 pontos. Nesta estratégia, ao prever o ponto $h+1$, utilizamos todos os dados observados até o ponto $h$ (incluindo os valores reais do teste até esse ponto), garantindo uma avaliação realista da capacidade preditiva dos modelos.
+Em cada fold, o modelo é treinado com os dados até o ponto de corte e realiza previsões \textit{one-step-ahead rolling forecast} para o horizonte de 4 pontos. Nesta estratégia, ao prever o ponto $h+1$, utilizamos todos os dados observados até o ponto $h$ (incluindo os valores reais do teste até esse ponto), garantindo uma avaliação realista da capacidade preditiva dos modelos.
 
 A Figura \ref{fig:baselines_comparison} ilustra o comportamento de todos os modelos baseline no último fold, permitindo visualizar como cada método se comporta em relação aos valores observados.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{baselines_comparison.png}
-    \caption{Comparação visual de todos os modelos baseline no último fold de validação. A linha preta representa os dados de treino, a linha vermelha os valores reais do teste, e as linhas tracejadas coloridas representam as previsões de cada modelo baseline.}
+    \includegraphics[width=0.75\textwidth]{baselines_comparison.png}
+    \caption{Ultimo fold}
     \label{fig:baselines_comparison}
 \end{figure}
 
@@ -51,14 +51,14 @@ Os resultados obtidos para as métricas de erro, calculados como a média sobre 
         \hline
         \textbf{Modelo} & \textbf{MAE} & \textbf{RMSE} & \textbf{MAPE (\%)} \\
         \hline
-        Drift Method & 1.6139 & 2.1241 & 13.34 \\
-        Naive Method & 1.6258 & 2.1323 & 13.39 \\
-        Rolling Mean (K=12) & 2.3230 & 3.0989 & 17.68 \\
-        Seasonal Naive & 6.0535 & 7.3639 & 46.48 \\
-        Mean Method & 8.4744 & 9.1184 & 69.71 \\
+        Drift Method & 1.734616 & 2.047200 & 14.25 \\
+        Naive Method & 1.747206 & 2.053144 & 14.30 \\
+        Rolling Mean (K=12) & 2.480043	 & 2.904220 & 18.88 \\
+        Seasonal Naive & 6.507206 & 6.658787 & 49.04 \\
+        Mean Method & 8.655486 & 8.793149 & 69.88	 \\
         \hline
     \end{tabular}
-    \caption{Resultados médios dos modelos baseline na validação cruzada (8 folds). Modelos ordenados por RMSE crescente (melhor para pior).}
+    \caption{Comparação de baselines}
     \label{tab:baseline_results}
 \end{table}
 
@@ -68,7 +68,7 @@ Para aplicações práticas, saber a margem de erro é tão importante quanto a 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{Driftconfidence.png}
+    \includegraphics[width=0.75\textwidth]{Driftconfidence.png}
     \caption{Previsão \textit{one-step-ahead} do Drift Method no último fold, exibindo o Intervalo de Confiança de 95\% (área sombreada). A caixa de texto destaca as métricas de calibração do intervalo.}
     \label{fig:drift_ci}
 \end{figure}
@@ -76,11 +76,11 @@ Para aplicações práticas, saber a margem de erro é tão importante quanto a 
 As métricas obtidas demonstram que o estimador de incerteza do Drift Method é confiável:
 
 \begin{itemize}
-    \item \textbf{Cobertura (Coverage):} O modelo obteve \textbf{93.33\%} de cobertura, valor muito próximo do ideal teórico de 95\%. Isso significa que, em 93\% das semanas, o valor real de volume caiu dentro da faixa prevista, indicando um modelo bem calibrado (nem excessivamente confiante, nem conservador demais).
-    
-    \item \textbf{Winkler Score (10.69):} Este score penaliza intervalos largos que não capturam o valor real. O valor baixo obtido, em conjunto com a alta cobertura, sugere que o modelo consegue manter o intervalo "estreito o suficiente" para ser útil (Largura Média $\approx$ 8.53) sem sacrificar a precisão.
-    
-    \item \textbf{Violação (6.67\%):} A taxa de violação está marginalmente acima dos 5\% esperados, o que é aceitável para um modelo baseline.
+    \item \textbf{Cobertura (Coverage):} O modelo obteve \textbf{75.00\%}, um valor abaixo do nível de confiança nominal de 95\%. Isso indica que o modelo apresenta \textit{overconfidence} (excesso de confiança), gerando intervalos de incerteza mais estreitos do que a real volatilidade da série exige. O modelo subestima o risco de caudas (eventos extremos).
+
+    \item \textbf{Winkler Score (22.49):} O score aumentou em relação aos testes anteriores, refletindo as penalidades pelas violações do intervalo. Embora a Largura Média ($\approx$ 12.28) busque um equilíbrio, o score indica que, para este horizonte de curto prazo, seria preferível um intervalo mais largo para garantir maior segurança (cobertura) nas previsões.
+
+    \item \textbf{Violação (25.00\%):} A taxa de violação é de 25.00\%, significativamente acima dos 5\% esperados teoricamente. Isso significa que, em média, uma a cada quatro previsões cai fora da margem de erro estimada. Este resultado justifica estatisticamente a necessidade de modelos mais sofisticados (como ARIMA com erros não-gaussianos ou GARCH) para capturar adequadamente a dispersão dos dados.
 \end{itemize}
 
 Esta validação da incerteza reforça a escolha do Drift Method como um benchmark sólido: ele não apenas prevê a tendência corretamente, mas também fornece uma estimativa de risco realista para o negócio.
@@ -93,20 +93,20 @@ A análise de resíduos do melhor modelo baseline foi realizada em três etapas:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{residuo.png}
+    \includegraphics[width=0.75\linewidth]{residuo.png}
     \caption{Série Temporal dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
 \textbf{2. Normalidade dos Resíduos:} A análise de normalidade através do histograma e gráfico Q-Q revelou desvios em relação à distribuição normal, especialmente nas caudas. Testes estatísticos confirmaram a rejeição da hipótese de normalidade, indicando que, embora o modelo capture a tendência central (média), ele pode não capturar perfeitamente os eventos extremos.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{normalidade.png}
+    \includegraphics[width=0.75\linewidth]{normalidade.png}
     \caption{Normalidade dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
 \textbf{3. Autocorrelação dos Resíduos:} A análise de autocorrelação (ACF) mostrou correlação serial significativa em alguns lags iniciais. Isso era esperado para um modelo baseline simples e indica que há estrutura temporal de curto prazo remanescente que não foi capturada apenas pela tendência linear do Drift. \begin{figure}[H]
     \centering
-    \includegraphics[width=1\linewidth]{autocorrelacao.png}
+    \includegraphics[width=0.75\linewidth]{autocorrelacao.png}
     \caption{Autocorrelação dos Resíduos}
     \label{fig:placeholder}
 \end{figure}
