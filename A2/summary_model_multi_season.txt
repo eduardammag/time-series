@@ -1,0 +1,40 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                 volume   R-squared:                       0.834
+Model:                            OLS   Adj. R-squared:                  0.817
+Method:                 Least Squares   F-statistic:                     49.44
+Date:                Mon, 01 Dec 2025   Prob (F-statistic):           1.17e-46
+Time:                        17:20:38   Log-Likelihood:                -313.34
+No. Observations:                 153   AIC:                             656.7
+Df Residuals:                     138   BIC:                             702.1
+Df Model:                          14                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         -3.5575      0.587     -6.063      0.000      -4.718      -2.397
+inv            1.8049      0.439      4.112      0.000       0.937       2.673
+users         -0.0568      0.066     -0.857      0.393      -0.188       0.074
+t              0.0824      0.005     16.244      0.000       0.072       0.092
+season_2       0.1593      0.800      0.199      0.842      -1.422       1.740
+season_3       0.9270      0.800      1.159      0.249      -0.655       2.509
+season_4       0.0537      0.807      0.067      0.947      -1.542       1.649
+season_5       0.9265      0.783      1.183      0.239      -0.622       2.475
+season_6       1.6972      0.791      2.146      0.034       0.133       3.261
+season_7       1.0910      0.768      1.421      0.158      -0.427       2.609
+season_8       2.5198      0.791      3.185      0.002       0.956       4.084
+season_9       2.9780      0.782      3.809      0.000       1.432       4.524
+season_10     -0.6501      0.827     -0.786      0.433      -2.285       0.984
+season_11     -0.8593      0.810     -1.061      0.291      -2.462       0.743
+season_12     -0.3081      0.764     -0.403      0.687      -1.818       1.202
+==============================================================================
+Omnibus:                       36.254   Durbin-Watson:                   0.436
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):               69.782
+Skew:                           1.080   Prob(JB):                     7.03e-16
+Kurtosis:                       5.506   Cond. No.                     1.08e+03
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.08e+03. This might indicate that there are
+strong multicollinearity or other numerical problems.
