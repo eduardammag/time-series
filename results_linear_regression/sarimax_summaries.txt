@@ -3,8 +3,8 @@ Model 1: SARIMAX (0,1,1) x (0,1,1,52)  AIC=83.05  BIC=87.36
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(0, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -38.527
-Date:                            Sun, 05 Oct 2025   AIC                             83.054
-Time:                                    18:24:30   BIC                             87.356
+Date:                            Mon, 01 Dec 2025   AIC                             83.054
+Time:                                    19:24:12   BIC                             87.356
 Sample:                                         0   HQIC                            84.456
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -31,8 +31,8 @@ Model 2: SARIMAX (2,1,0) x (1,1,0,52)  AIC=83.86  BIC=89.60
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(2, 1, 0)x(1, 1, 0, 52)   Log Likelihood                 -37.930
-Date:                            Sun, 05 Oct 2025   AIC                             83.861
-Time:                                    18:24:30   BIC                             89.597
+Date:                            Mon, 01 Dec 2025   AIC                             83.861
+Time:                                    19:24:12   BIC                             89.597
 Sample:                                         0   HQIC                            85.731
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -60,8 +60,8 @@ Model 3: SARIMAX (2,1,1) x (0,1,1,52)  AIC=84.28  BIC=91.45
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(2, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -37.142
-Date:                            Sun, 05 Oct 2025   AIC                             84.284
-Time:                                    18:24:30   BIC                             91.453
+Date:                            Mon, 01 Dec 2025   AIC                             84.284
+Time:                                    19:24:12   BIC                             91.453
 Sample:                                         0   HQIC                            86.621
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -90,8 +90,8 @@ Model 4: SARIMAX (1,1,1) x (0,1,1,52)  AIC=84.74  BIC=90.48
 ==========================================================================================
 Dep. Variable:                             volume   No. Observations:                  138
 Model:             SARIMAX(1, 1, 1)x(0, 1, 1, 52)   Log Likelihood                 -38.371
-Date:                            Sun, 05 Oct 2025   AIC                             84.743
-Time:                                    18:24:30   BIC                             90.479
+Date:                            Mon, 01 Dec 2025   AIC                             84.743
+Time:                                    19:24:12   BIC                             90.479
 Sample:                                         0   HQIC                            86.612
                                             - 138                                         
 Covariance Type:                           approx                                         
@@ -119,8 +119,8 @@ Model 5: SARIMAX (0,1,0) x (0,1,1,52)  AIC=84.95  BIC=87.88
 ============================================================================================
 Dep. Variable:                               volume   No. Observations:                  138
 Model:             SARIMAX(0, 1, 0)x(0, 1, [1], 52)   Log Likelihood                 -40.474
-Date:                              Sun, 05 Oct 2025   AIC                             84.949
-Time:                                      18:24:30   BIC                             87.880
+Date:                              Mon, 01 Dec 2025   AIC                             84.949
+Time:                                      19:24:12   BIC                             87.880
 Sample:                                           0   HQIC                            85.920
                                               - 138                                         
 Covariance Type:                             approx                                         

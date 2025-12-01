@@ -4,7 +4,7 @@ Dep. Variable:                 volume   R-squared:                       0.834
 Model:                            OLS   Adj. R-squared:                  0.817
 Method:                 Least Squares   F-statistic:                     49.44
 Date:                Mon, 01 Dec 2025   Prob (F-statistic):           1.17e-46
-Time:                        17:20:38   Log-Likelihood:                -313.34
+Time:                        19:15:37   Log-Likelihood:                -313.34
 No. Observations:                 153   AIC:                             656.7
 Df Residuals:                     138   BIC:                             702.1
 Df Model:                          14                                         
