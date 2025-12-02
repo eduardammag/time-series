@@ -62,30 +62,31 @@
         
     \end{center}
 \end{titlepage}
-
 \section*{Discussão sobre métricas e métodos de avaliação}
 
-Para previsões pontuais temos dois grupos de métricas e avaliação: métricas percentuais e métricas absolutas.
+Existem duas vertentes principais de métricas de erro para previsões: métricas absolutas e métricas percentuais. Cada grupo avalia o desempenho de forma diferente e é adequado para contextos distintos.
 
-Métricas percentuais são adequadas para cenários em que os valores devem ter ordem de grandeza consistente, e mais importante assumir valores distantes de zero, evitando distorções. 
+\textbf{Métricas absolutas} (MAE, MSE, RMSE) comparam previsões e valores reais na escala original da série. São estáveis quando os valores podem ser pequenos ou variar muito ao longo do tempo, pois não dependem de proporções. Têm interpretação direta (“erro médio em unidades da variável”).
 
-Em uma primeira análise, observa-se que mais de um terço dos dados está no intervalo sujeito a distorções. O intervalo total dos valores é $[0.14, 16.59]$. No entanto, como esses dados potenicialmente distorcidos concentram-se apenas no início e reservamos o final da série para previsões fora do treino, essa limitação, que normalmente inviabilizaria o uso de métricas percentuais, não compromete a análise e tais métricas serão usadas ao longo da análise.
+\textbf{Métricas percentuais} (MAPE e sMAPE) medem erro relativo, comparando o erro ao tamanho do valor observado. São úteis quando a escala da série muda e quando o interesse é avaliar o erro como proporção do valor real. Porém, distorcem resultados quando há valores muito pequenos, já que o denominador torna o erro artificialmente grande.
 
+Cada vertente oferece uma perspectiva diferente: métricas absolutas focam no desvio real; métricas percentuais focam na relevância relativa do erro.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/histogram.png}
-    \caption{Histograma e distribuição dos valores}
-    % \label{fig:placeholder}
-\end{figure}
+Dentro do nosso contexto serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada. Essas métricas permanecem adequadas mesmo com covariáveis, pois não dependem da escala relativa dos valores observados.
 
-Ademais, serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada.
+Além disso, existem diferentes formas de treinar o modelo para previsões em séries temporais. Os principais tipos são:
+
+\textbf{One-shot}: Gera todos os passos futuros de uma vez. A entrada é a janela histórica, a saída é um vetor contendo todos os pontos de previsão. Essa método evita acúmulo de erro, porém mais difícil de treinar quando o horizonte é grande.
+
+\textbf{Iterativo(One-Step-Ahead Rolling Forecast)}: Prevê um passo por vez. Para prever o passo seguinte, usa como entrada a própria previsão anterior. Gera $\hat{y}(t+1)$, depois usa $y(t+1)$, se disponível ou $\hat{y}(t+1)$, para gerar $\hat{y}(t+2)$, e assim por diante. Uma desvantagem dessa abordagem é o erro que se acumula a cada passo.
+
+\textbf{Lag(Cross Validation)}: O histórico recente vira feature e o próximo valor vira alvo, a cada passo a janela anda também. Um ponto é que é flexível e compatível com qualquer modelo, porém é sensível a escolha dos lags. Com covariáveis, é possível usar valores no mesmo instante da variável-alvo (contemporâneos), conhecidas no presente, e também versões defasadas dessas covariáveis, quando só é conhecido o passado e não o presente.
 
 \section*{Discussão sobre a necessidade de transformação de variáveis}
 
 A série apresentada exibe um comportamento \textbf{claramente crescente ao longo do tempo}, com oscilações cada vez mais amplas a partir de 2024. Esse padrão indica a presença de \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
 
-Nesses casos, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}.  
+    Nesses casos, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}.  
 Usamos a transformação logarítmica cujos efeitos benéficos são:
 
 \begin{itemize}
