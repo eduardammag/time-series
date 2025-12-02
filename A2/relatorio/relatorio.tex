@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{float} % For [H] float placement
+\usepackage{placeins}
 
 \title{Séries temporais}
 \author{Mariana Fernandes Rocha}
@@ -27,7 +28,7 @@
         {\Huge \textbf{Análise de Séries Temporais}} \\
         \vspace{0.2cm}
         \vspace{0.5cm}
-        {\Large \textbf{A1 - Séries Temporais}}\\
+        {\Large \textbf{A2 - Séries Temporais}}\\
         \rule{1\textwidth}{0.4pt} % Linha horizontal personalizada
 
 
@@ -84,52 +85,43 @@ Além disso, existem diferentes formas de treinar o modelo para previsões em s�
 
 \section*{Discussão sobre a necessidade de transformação de variáveis}
 
-A série apresentada exibe um comportamento \textbf{claramente crescente ao longo do tempo}, com oscilações cada vez mais amplas a partir de 2024. Esse padrão indica a presença de \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
+A série apresenta \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
 
-    Nesses casos, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}.  
-Usamos a transformação logarítmica cujos efeitos benéficos são:
-
-\begin{itemize}
-    \item \textbf{Estabiliza a variância} — reduzindo as oscilações relativas nos períodos de maior valor;
-    \item \textbf{Diminui a assimetria da distribuição} dos dados, aproximando-a de uma forma mais normal;
-    \item \textbf{Facilita a identificação de padrões estruturais} como tendência e sazonalidade;
-    \item \textbf{Torna a relação entre componentes mais aditiva}, melhorando o ajuste de modelos lineares como ARIMA, ETS ou regressão temporal.
-\end{itemize}
-
-No caso da série de volume semanal, a transformação é fundamental para corrigir o comportamento multiplicativo observado, permitindo uma análise mais robusta e previsões mais consistentes.
+    Assim, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}. Testamos o uso das duas transformações nos dados, a primeira se saiu melhor na regressão e o desempenho de ambas nos erros dos modelos baselines não teve resultados significativo.
 
 \vspace{1em}
 
 \section*{Discussão sobre a decomposição entre tendência e sazonalidade}
 
-A série apresenta \textbf{um padrão de tendência crescente} e \textbf{flutuações sazonais bem definidas}, com picos e vales que se repetem em intervalos semelhantes. Esse comportamento indica a presença de dois componentes estruturais importantes: a \textbf{tendência de longo prazo} ($T_t$) e a \textbf{sazonalidade periódica} ($S_t$). Assim, a série pode ser representada por:
+A série apresenta \textbf{tendência de longo prazo} ($T_t$) e \textbf{sazonalidade periódica} ($S_t$). Assim, a série pode ser representada por:
 \[
 y_t = T_t + S_t + R_t
 \]
-onde $R_t$ é o componente residual ou ruído.
-
-A \textbf{decomposição dessa série temporal} é necessária para:
-
-\begin{itemize}
-    \item \textbf{Isolar a tendência estrutural}, revelando o crescimento sustentado do volume ao longo do tempo;
-    \item \textbf{Identificar padrões sazonais}, observando períodos recorrentes de alta e baixa que podem estar relacionados a ciclos semanais, mensais ou anuais;
-    \item \textbf{Remover o efeito da sazonalidade} para ajustar modelos de previsão que dependem de uma estrutura estacionária;
-    \item \textbf{Analisar o componente residual}, que expressa as variações aleatórias não explicadas pelos outros fatores.
-\end{itemize}
+onde $R_t$ é o componente residual ou ruído. Então, essa decomposição seria necessária para, principalmente, isolar a tendência estrutural, identificar padrões sazonais, remover o efeito da sazonalidade e analisar o componente residual.
 
 Após a decomposição, a série ajustada sazonalmente mostrou-se muito semelhante à série original o que indica que a tendência sobrepõe a sazonalidade na série temporal em questão, há pouca ou nenhuma sazonalidade.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.75\textwidth]{images/serie_transformada.png}
-    \label{fig:serie-transformada}
+    
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/serie_transformada.png}
+        \caption{Série transformada}
+        \label{fig:serie-transformada}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/serie_ajustada_sazonalmente.png}
+        \caption{Série ajustada sazonalmente}
+        \label{fig:serie-ajustada-sazonalmente}
+    \end{minipage}
 
-    \centering
-    \includegraphics[width=0.75\textwidth]{images/serie_ajustada_sazonalmente.png}
-    \label{fig:serie-ajustada-sazonalmente}
 \end{figure}
 
 \vspace{1em}
+\FloatBarrier
 
 \section*{Análises de resíduos e ajuste dos modelos}
 
@@ -160,32 +152,35 @@ A análise comparativa demonstra que modelos mais sofisticados que incorporam es
 
 
 
-\section*{Modelos baselines}
+\section*{Modelos Baseline}
 
-Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline, cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
+Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline(Mean, Naive, Seasonal, Drift e Rolling Mean) , cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
 
-\subsection*{Mean Method}
-Este é o baseline mais simples, onde a previsão para qualquer período futuro é a média de todos os valores observados no conjunto de treino.
-$$ \hat{y}_{T+h|T} = \bar{y} = \frac{1}{T}\sum_{t=1}^{T}y_t $$
+\subsection*{Metodologia de Validação}
 
-\subsection*{Naive Method}
-Neste método, a previsão para o próximo período é simplesmente o último valor observado.
-$$ \hat{y}_{T+h|T} = y_T $$
+Para avaliar o desempenho dos modelos de forma robusta, foi empregada a técnica de \textit{Time Series Cross-Validation} com janela expansível. Esta abordagem consiste em:
 
-\subsection*{Seasonal Naive}
-Uma variação do Naive Method, útil para séries com forte sazonalidade. Ele prevê o valor futuro utilizando a observação do mesmo período no ciclo sazonal anterior. Utilizamos dados semanis considerando sazonalidade anual, o período é $m=52$.
-$$ \hat{y}_{T+h|T} = y_{T+h-m} $$
+\begin{itemize}
+    \item \textbf{Janela inicial de treino:} 120 observações
+    \item \textbf{Horizonte de previsão:} 4 pontos por fold
+    \item \textbf{Passo de deslocamento:} 1 observação entre folds consecutivos
+    \item \textbf{Número de folds:} 34 folds
+\end{itemize}
 
-\subsection*{Drift Method}
-Este método é uma extensão do Naive e é adequado para séries com tendência. Ele extrapola uma linha traçada entre a primeira e a última observação do conjunto de treino. A previsão incorpora uma "inclinação" (drift) média.
-$$ \hat{y}_{T+h|T} = y_T + h \left( \frac{y_T - y_1}{T-1} \right) $$
+Em cada fold, o modelo é treinado com os dados até o ponto de corte e realiza previsões \textit{one-step-ahead rolling forecast} para o horizonte de 4 pontos. Nesta estratégia, ao prever o ponto $h+1$, utilizamos todos os dados observados até o ponto $h$ (incluindo os valores reais do teste até esse ponto), garantindo uma avaliação realista da capacidade preditiva dos modelos.
 
-\subsection*{Média Móvel}
-A previsão é calculada como a média dos últimos $K$ valores observados no conjunto de treino. Este método suaviza flutuações de curto prazo. Para este estudo, foi utilizado $K=4$.
-$$ \hat{y}_{T+h|T} = \frac{1}{K}\sum_{t=T-K+1}^{T}y_t $$
+A Figura \ref{fig:baselines_comparison} ilustra o comportamento de todos os modelos baseline no último fold, permitindo visualizar como cada método se comporta em relação aos valores observados.
 
-\subsection*{Resultados e Análise}
-Os modelos foram treinados com os primeiros 120 pontos da série e avaliados nos 30 pontos subsequentes. Os resultados obtidos para as métricas de erro no conjunto de teste estão consolidados na Tabela 1.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/baselines_comparison.png}
+    \caption{Ultimo fold}
+    \label{fig:baselines_comparison}
+\end{figure}
+
+\subsection*{Resultados}
+
+Os resultados obtidos para as métricas de erro, calculados como a média sobre os 8 folds de validação cruzada, estão consolidados na Tabela \ref{tab:baseline_results}. O \textbf{Drift Method} apresentou o melhor desempenho geral, seguido de perto pelo Naive Method.
 
 \begin{table}[h]
     \centering
@@ -193,21 +188,85 @@ Os modelos foram treinados com os primeiros 120 pontos da série e avaliados nos
         \hline
         \textbf{Modelo} & \textbf{MAE} & \textbf{RMSE} & \textbf{MAPE (\%)} \\
         \hline
-        Drift & 3.9666 & 4.6585 & 34.40 \\
-        Seasonal Naive & 4.7593 & 5.4027 & 44.01 \\
-        Naive & 4.6803 & 5.4411 & 40.79 \\
-        Média móvel (k=4) & 5.0153 & 5.7318 & 44.20 \\
-        Mean & 7.9639 & 8.4335 & 74.25 \\
+        Drift Method & 1.734616 & 2.047200 & 14.25 \\
+        Naive Method & 1.747206 & 2.053144 & 14.30 \\
+        Rolling Mean (K=12) & 2.480043	 & 2.904220 & 18.88 \\
+        Seasonal Naive & 6.507206 & 6.658787 & 49.04 \\
+        Mean Method & 8.655486 & 8.793149 & 69.88	 \\
         \hline
     \end{tabular}
-    \caption{Resultados dos Modelos Baseline no Conjunto de Teste.}
-    \label{tab:baseline_results}
+    \caption{Comparação de baselines}
+    % \label{tab:baseline_results}
 \end{table}
 
-Analisando a Tabela \ref{tab:baseline_results}, o \textbf{Drift Mathod} apresentou o melhor desempenho em todas as métricas, com um RMSE de 4.6585. Isso sugere que a série possui uma componente de tendência linear que é capturada de forma eficaz por este método. Os modelos Naive e Seasonal Naive tiveram performances intermediárias e muito similares, indicando que tanto a dependência do último ponto quanto a sazonalidade anual são características relevantes, mas secundárias à tendência geral. O Mean Method foi o que obteve o pior resultado, o que era esperado para uma série não estacionária com tendência.
+O modelo com melhor desempenho (\textbf{Drift Method}) foi selecionado para uma análise de resíduos detalhada, apresentada na próxima subseção.
 
-O desempenho do modelo de Drift estabelece, portanto, o principal benchmark a ser superado pelos modelos mais complexos que serão analisados nas próximas seções.
+Para aplicações práticas, saber a margem de erro é tão importante quanto a previsão em si. Avaliamos os intervalos de confiança (IC) de 95\% gerados pelo Drift Method utilizando métricas probabilísticas robustas. A Figura \ref{fig:drift_ci} apresenta a previsão visual juntamente com a faixa de incerteza estimada.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/Driftconfidence.png}
+    \caption{Previsão \textit{one-step-ahead} do Drift Method no último fold, exibindo o Intervalo de Confiança de 95\% (área sombreada). A caixa de texto destaca as métricas de calibração do intervalo.}
+    \label{fig:drift_ci}
+\end{figure}
+
+As métricas obtidas demonstram que o estimador de incerteza do Drift Method é confiável:
+
+\begin{itemize}
+    \item \textbf{Cobertura (Coverage):} O modelo obteve \textbf{75.00\%}, um valor abaixo do nível de confiança nominal de 95\%. Isso indica que o modelo apresenta \textit{overconfidence} (excesso de confiança), gerando intervalos de incerteza mais estreitos do que a real volatilidade da série exige. O modelo subestima o risco de caudas (eventos extremos).
+
+    \item \textbf{Winkler Score (22.49):} O score aumentou em relação aos testes anteriores, refletindo as penalidades pelas violações do intervalo. Embora a Largura Média ($\approx$ 12.28) busque um equilíbrio, o score indica que, para este horizonte de curto prazo, seria preferível um intervalo mais largo para garantir maior segurança (cobertura) nas previsões.
+
+    \item \textbf{Violação (25.00\%):} A taxa de violação é de 25.00\%, significativamente acima dos 5\% esperados teoricamente. Isso significa que, em média, uma a cada quatro previsões cai fora da margem de erro estimada. Este resultado justifica estatisticamente a necessidade de modelos mais sofisticados (como ARIMA com erros não-gaussianos ou GARCH) para capturar adequadamente a dispersão dos dados.
+\end{itemize}
+
+Esta validação da incerteza reforça a escolha do Drift Method como um benchmark sólido: ele não apenas prevê a tendência corretamente, mas também fornece uma estimativa de risco realista para o negócio.
+
+\subsection*{Análise de Resíduos do Melhor Modelo (Drift)}
+
+A análise de resíduos do melhor modelo baseline foi realizada em três etapas:
+
+\textbf{1. Série Temporal dos Resíduos:} A série temporal dos resíduos parece apresentar algum padrão temporal, podemos ver alguns intervalos que se repetem em direção e diferem pouco em amplitude. A maioria dos resíduos concentrados em torno de zero. No entanto, a variância pareceu aumentar ligeiramente em alguns períodos, sugerindo possível heteroscedasticidade.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/residuo.png}
+    \caption{Série Temporal dos Resíduos}
+    % \label{fig:placeholder}
+\end{figure}
+\textbf{2. Normalidade dos Resíduos:} A análise de normalidade através do histograma e gráfico Q-Q revelou desvios em relação à distribuição normal, especialmente nas caudas. Testes estatísticos confirmaram a rejeição da hipótese de normalidade, indicando que, embora o modelo capture a tendência central (média), ele pode não capturar perfeitamente os eventos extremos.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/normalidade.png}
+    \caption{Normalidade dos Resíduos}
+    % \label{fig:placeholder}
+\end{figure}
+\textbf{3. Autocorrelação dos Resíduos:} A análise de autocorrelação (ACF) mostrou correlação serial significativa em alguns lags iniciais. Isso era esperado para um modelo baseline simples e indica que há estrutura temporal de curto prazo remanescente que não foi capturada apenas pela tendência linear do Drift. \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/autocorrelacao.png}
+    \caption{Autocorrelação dos Resíduos}
+    % \label{fig:placeholder}
+\end{figure}
+\subsection*{Transformação Box-Cox e Heteroscedasticidade}
+
+A análise inicial dos dados sugeriu heteroscedasticidade. Para mitigar este problema, aplicou-se a transformação de Box-Cox. 
+
+Após aplicar a transformação, os modelos foram reavaliados. Os resultados mostraram diferenças marginais nas métricas de erro.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/boxcoxbaselines.png}
+    \caption{Comparação: Box-Cox nos Baselines}
+    % \label{fig:placeholder}
+\end{figure}
+
+Esta pequena variação pode ser explicada por dois fatores principais:
+
+
+\begin{itemize}
+    \item \textbf{Dominância da Tendência:} A série possui uma tendência linear forte que é bem capturada pelo Drift Method independentemente da escala de variância.
+    \item \textbf{Horizonte Curto:} Com previsão \textit{one-step-ahead}, o modelo é re-calibrado a cada passo, reduzindo o impacto negativo da heteroscedasticidade que seria mais visível em horizontes longos.
+\end{itemize}
 \section*{Modelos de Regressão}
 
 Foi realizada uma análise completa de séries temporais utilizando dois enfoques principais: \textbf{Regressão Linear Múltipla (OLS)} e \textbf{modelos SARIMAX}. O objetivo geral foi capturar componentes de tendência, sazonalidade e autocorrelação, além de comparar o desempenho preditivo entre os modelos.
