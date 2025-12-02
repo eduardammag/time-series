@@ -1,10 +1,11 @@
 \documentclass{article}
-\usepackage[a4paper, margin=2cm]{geometry} % <-- Adiciona esta linha
+\usepackage[a4paper, margin=2cm]{geometry} 
 \usepackage{graphicx} % Required for inserting images
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{float} % For [H] float placement
 \usepackage{placeins}
+\usepackage{float}
 
 \title{Séries temporais}
 \author{Mariana Fernandes Rocha}
@@ -63,6 +64,13 @@
         
     \end{center}
 \end{titlepage}
+
+
+
+
+
+
+
 \section*{Discussão sobre métricas e métodos de avaliação}
 
 Existem duas vertentes principais de métricas de erro para previsões: métricas absolutas e métricas percentuais. Cada grupo avalia o desempenho de forma diferente e é adequado para contextos distintos.
@@ -87,7 +95,7 @@ Além disso, existem diferentes formas de treinar o modelo para previsões em s�
 
 A série apresenta \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
 
-    Assim, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}. Testamos o uso das duas transformações nos dados, a primeira se saiu melhor na regressão e o desempenho de ambas nos erros dos modelos baselines não teve resultados significativo.
+    Assim, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}. Testamos o uso das duas transformações nos dados, a segunda se saiu melhor na regressão e o desempenho de ambas nos erros dos modelos baselines não teve resultados significativos.
 
 \vspace{1em}
 
@@ -122,36 +130,6 @@ Após a decomposição, a série ajustada sazonalmente mostrou-se muito semelhan
 
 \vspace{1em}
 \FloatBarrier
-
-\section*{Análises de resíduos e ajuste dos modelos}
-
-Criamos uma classe chamada \texttt{ResidualAnalysis} que implementa uma análise completa e sistemática de resíduos para modelos de séries temporais, utilizando uma abordagem estatística rigorosa para avaliar a qualidade dos modelos preditivos. O código realiza três tipos principais de análise: testes estatísticos formais, análise gráfica abrangente e diagnóstico comparativo entre modelos.
-
-A análise inicia com testes estatísticos formais que avaliam quatro pressupostos fundamentais: normalidade dos resíduos (teste Anderson-Darling), ausência de autocorrelação (Ljung-Box e Durbin-Watson), homocedasticidade (teste ARCH) e média zero (teste t). Paralelamente, são gerados 12 gráficos diagnósticos que permitem a visualização multidimensional dos resíduos, incluindo ACF/PACF, Q-Q plots, resíduos versus valores ajustados, e distribuições comparativas.
-
-Baseado nas análises que fizemos, podemos observar uma hierarquia clara na qualidade dos modelos:
-
-\begin{itemize}
-    \item \textbf{SARIMAX}: Melhor desempenho geral (pontuação: 1.998) com RMSE mais baixo (0.675)
-    \item \textbf{Regression}: Performance intermediária (pontuação: 0.000) com RMSE moderado (1.404)
-    \item \textbf{Modelos de baseline}: Performance inferior com RMSE elevado (6.300-10.606)
-\end{itemize}
-
-O SARIMAX destacou-se por atender aos critérios de ausência de autocorrelação e média zero, embora apresente problemas de normalidade e heterocedasticidade. Ele foi escolhido, pois o modelo OLS não captava as características variacionais dos dados.
-
-Apesar do bom desempenho do SARIMAX, a falha no teste de normalidade sugere que transformações nos dados ou ajustes na especificação do modelo podem melhorar ainda mais sua performance. Para o modelo de Regression, a presença de autocorrelação indica a necessidade de incorporar componentes autorregressivos ou usar erros padrão robustos.
-
-A análise comparativa demonstra que modelos mais sofisticados que incorporam estrutura temporal (SARIMAX) superam significativamente tanto modelos de regressão convencionais quanto abordagens de baseline, destacando a importância de considerar a dependência temporal na modelagem. As análises completas dos outros modelos podem ser verificadas no arquivo ipynb.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/sarimax_analisado.png}
-    \caption{Análise completa de resíduos do modelo SARIMAX}
-    \label{fig:sarimax_residuals}
-\end{figure}
-
-
-
 \section*{Modelos Baseline}
 
 Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline(Mean, Naive, Seasonal, Drift e Rolling Mean) , cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
@@ -180,7 +158,7 @@ A Figura \ref{fig:baselines_comparison} ilustra o comportamento de todos os mode
 
 \subsection*{Resultados}
 
-Os resultados obtidos para as métricas de erro, calculados como a média sobre os 8 folds de validação cruzada, estão consolidados na Tabela \ref{tab:baseline_results}. O \textbf{Drift Method} apresentou o melhor desempenho geral, seguido de perto pelo Naive Method.
+Os resultados obtidos para as métricas de erro, calculados como a média sobre os 8 folds de validação cruzada, estão consolidados na Tabela 1. O \textbf{Drift Method} apresentou o melhor desempenho geral, seguido de perto pelo Naive Method.
 
 \begin{table}[h]
     \centering
@@ -267,69 +245,258 @@ Esta pequena variação pode ser explicada por dois fatores principais:
     \item \textbf{Dominância da Tendência:} A série possui uma tendência linear forte que é bem capturada pelo Drift Method independentemente da escala de variância.
     \item \textbf{Horizonte Curto:} Com previsão \textit{one-step-ahead}, o modelo é re-calibrado a cada passo, reduzindo o impacto negativo da heteroscedasticidade que seria mais visível em horizontes longos.
 \end{itemize}
-\section*{Modelos de Regressão}
 
-Foi realizada uma análise completa de séries temporais utilizando dois enfoques principais: \textbf{Regressão Linear Múltipla (OLS)} e \textbf{modelos SARIMAX}. O objetivo geral foi capturar componentes de tendência, sazonalidade e autocorrelação, além de comparar o desempenho preditivo entre os modelos.
+\section*{Modelos de Regressão linear}
 
-\subsection*{Regressão Linear Múltipla (OLS)}
-O modelo OLS considerou a variável dependente \texttt{volume}, com preditores que representam a tendência temporal (\texttt{t}), harmônicos sazonais (\texttt{sin1}, \texttt{cos1}, \texttt{sin2}, \texttt{cos2}) e dummies mensais (\texttt{m\_2} a \texttt{m\_12}).  
-O objetivo foi ajustar um modelo interpretável capaz de representar tendência e sazonalidade. O diagnóstico de resíduos incluiu ACF/PACF, histograma, QQ-Plot e teste de Ljung-Box. As métricas de desempenho utilizadas foram \textbf{RMSE} e \textbf{MAPE}, calculadas sobre o conjunto de teste (últimas 12 semanas). Como veremos mais a frente, na análise de resíduos, o modelo OLS não capturou adequadamente a estrutura dos dados.
+Foi realizada uma análise completa de séries temporais utilizando regressão linear simples e múltipla. O objetivo geral foi capturar componentes de tendência, sazonalidade e autocorrelação, além de comparar o desempenho preditivo entre os modelos. Além disso, comparamos desempenhos em diferentes tipos de cross-validations e também utilizando transformações log e Box-Cox.
+
+\textbf{Modelo Simples}: Regressão linear simples utilizando apenas a variável temporal $t$. O modelo captura uma tendência linear ao longo do tempo para explicar o volume.
+
+$$\hat{y}_t = \beta_0 + \beta_1 t$$
+
+\textbf{ Modelo Múltiplo} Regressão linear múltipla com variáveis explicativas $t$, \textit{inv} e \textit{users}. O modelo captura não só a tendência temporal, mas também a influência das variáveis externas. 
+$$\hat{y}_t = \beta_0 + \beta_1 t + \beta_2 \text{inv}_t + \beta_3 \text{users}_t$$
+
+
+\textbf{ Modelo Múltiplo + Sazonalidade} Extensão do modelo múltiplo, adicionando variáveis dummy de sazonalidade do mês. Captura padrões cíclicos periódicos além da tendência e efeitos das variáveis externas. 
+$$\hat{y}_t = \beta_0 + \beta_1 t + \beta_2 \text{inv}_t + \beta_3 \text{users}_t + \sum_{i=1}^{11} \gamma_i \text{Season}_i$$
+
+\subsection*{Comparação dos Modelos}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        % Tabela
+        \begin{tabular}{lc}
+        \hline
+        \textbf{Modelo} & \textbf{RMSE} \\
+        \hline
+        Simples & 8.82 \\
+        Múltiplo & 8.08 \\
+        Múltiplo + Sazonalidade & 6.11 \\
+        \hline
+        \end{tabular}
+        \vspace{2.5em} % Espaço entre tabela e figura
+        % Figura
+        \includegraphics[width=\linewidth]{images/regressao_multipla.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/residuos_regressao_multipla.png}}
+    \end{minipage}
+    \caption{Comparação dos modelos de regressão: tabela de RMSE e figuras do modelo múltiplo ajustado e análise dos resíduos.}
+    \label{fig:comparacao_modelos}
+\end{figure}
+
+Podemos observar que os resíduos não estão completamente de acordo com as premissas de normalidade e homocedasticidade, apresentando aumento significativo no final da série. Isso indica que o modelo ainda não capturou totalmente todas as características da série temporal, como tendências locais, mudanças abruptas ou efeitos sazonais residuais.
+
+\subsection*{Transformações} 
+Com o intuito de melhorar esse ajuste e resíduos, aplicamos transformações log e Box-cox:
+
+\textbf{Regressão com Transformação Box-Cox}Reduz assimetria, melhora homocedasticidade e tende a produzir resíduos mais próximos de uma distribuição normal, o que aumenta a confiabilidade das inferências e intervalos de confiança.
+
+\textbf{Regressão com Transformação Logarítmica:}Similar à Box-Cox, é útil para dados positivos e assimétricos, simplifica efeitos multiplicativos em termos aditivos no modelo linear.
+
+\subsubsection*{Comparação Final dos Modelos}
+
+A tabela a seguir apresenta as métricas de desempenho (RMSE, MAE e MAPE) calculadas no conjunto de teste para cada abordagem:
 
 \begin{table}[h!]
 \centering
-% \caption{Resultados da Regressão OLS}
-\begin{tabular}{ll}
+\begin{tabular}{lccc}
 \hline
-\textbf{Variável} & \textbf{Valor} \\
+\textbf{Modelo} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE (\%)} \\
 \hline
-Dep. Variable       & volume \\
-No. Observations    & 150 \\
-Df Residuals        & 133 \\
-Df Model            & 16 \\
-R-squared           & 0.806 \\
-Adj. R-squared      & 0.783 \\
-F-statistic         & 34.61 \\
-Prob (F-statistic)  & 1.50e-39 \\
-AIC                 & 632.3 \\
-BIC                 & 683.5 \\
+Box-Cox & 2.386 & 2.273 & 11.46 \\
+Log & 5.389 & 5.101 & 25.60 \\
+Original & 8.077 & 7.434 & 36.68 \\
 \hline
 \end{tabular}
+\caption{Comparação de desempenho das transformações aplicadas na regressão.}
+\label{tab:comparacao_transformacoes}
 \end{table}
 
-\subsection*{Modelos SARIMAX}
-Como os resultados do OLS não se mostraram promissores, pesquisamos outros modelos de regressão mais robustos que pudessem melhorar o desempenho nesses dados. Os modelos SARIMAX foram empregados para capturar dependências temporais não explicadas pela regressão, incluindo componentes autorregressivos (AR), de média móvel (MA) e sazonais (P, D, Q, m).  
-A seleção de parâmetros foi realizada via \texttt{auto\_arima} e grid search manual. Foram aplicados os mesmos diagnósticos de resíduos e métricas de avaliação (RMSE, MAPE), além de critérios de informação \textbf{AIC} e \textbf{BIC}. O melhor resultado foi
-o SARIMAX (0,1,1) x (0,1,1,52) (AIC=83.05, BIC=87.36)
-
-\subsection*{Comparação e Resultados}
-Os resultados comparativos mostraram que o modelo OLS não o  capturou adequadamente a estrutura dos dados e tenho um erro maior, enquanto o SARIMAX apresenta melhor ajuste em termos de dependência temporal e critérios de informação, como podemos ver pelo gráfico e pelos erros comparados.  
-
-\begin{table}[h]
+\begin{figure}[H]
     \centering
-    \begin{tabular}{|l|c|c|c|}
-        \hline
-        \textbf{Modelo}  & \textbf{RMSE} & \textbf{MAPE (\%)} \\
-        \hline
-        OLS & 5.1834 & 0.3303 \\
-        SARIMAX  & 3.2793 & 0.2212 \\
-        \hline
-    \end{tabular}
-    % \caption{Resultados dos Modelos de regressão no Conjunto de Teste.}
-    \label{tab:baseline_results}
-\end{table}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/forecast_comparison.png}
-    % \caption{Histograma e distribuição dos valores}
-    % \label{fig:placeholder}
+    \includegraphics[width=0.7\linewidth]{images/regressao_original.png}
+    \includegraphics[width=0.7 \linewidth]{images/regressao_box_cox.png}
+    \includegraphics[width=0.7 \linewidth]{images/regressao_log.png}
+    \label{fig:placeholder}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/residuos_box_cox.png}
+    \caption{Análise dos resíduos do melhor modelo: com Box-Cox}
+    \label{fig:placeholder}
+\end{figure}
+
+A transformação Box-Cox proporcionou a melhor performance, reduzindo significativamente erros de previsão e estabilizando a variância, enquanto o modelo original apresentou o pior desempenho devido à alta assimetria e heterocedasticidade da série. O log também melhorou a performance, mas de forma menos expressiva que o Box-Cox.
+
+\vspace{2.5em}
+
+Outros testes que fizemos foi a análise de diferentes tipos de cross-validation para o treinamento com dados temporais:
+
+\textbf{Rolling Window (Janela Deslizante):} Nesse método, o modelo é treinado usando uma janela fixa de observações consecutivas e, em seguida, faz-se a previsão para o próximo ponto (ou horizonte h). Depois, a janela "desliza" uma posição para frente e o processo se repete.
+
+\textbf{Expanding Window (Janela Expansiva):}Aqui, o conjunto de treino cresce a cada iteração, começando com uma janela inicial e adicionando novos pontos conforme avançamos no tempo.
+
+\textbf{TimeSeriesSplit (Cross-Validation para séries temporais):}É uma generalização das duas anteriores. Divide a série em vários "folds" temporais:
+Cada fold mantém a ordem temporal (não embaralha os dados).
+Cada iteração usa uma parte inicial como treino e a seguinte como teste.
+
+\section*{Modelos Autorregressivos}
+Foram testados diferentes modelos de séries temporais para prever o volume semanal, avaliando o desempenho no conjunto de teste (\(h=4\) semanas).
+
+\subsubsection*{Modelos AR, MA e ARMA}
+
+\begin{itemize}
+    \item \textbf{AR(p) — Autoregressivo:} 
+    Assume que o valor atual da série depende linearmente dos \(p\) valores passados:
+    \(
+        y_t = \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \epsilon_t
+    \)
+    onde \(\epsilon_t\) é ruído branco. Foram testados AR(1), AR(2) e AR(3).
+
+    \item \textbf{MA(q) — Média Móvel:} 
+    Considera que o valor atual da série depende de uma média ponderada dos erros passados:
+    \(
+        y_t = \epsilon_t + \theta_1 \epsilon_{t-1} + \dots + \theta_q \epsilon_{t-q}
+    \)
+    Foram avaliados MA(1) e MA(2) para capturar choques recentes.
+
+    \item \textbf{ARMA(p,q) — Combinação AR e MA:} 
+    Combina dependência linear de valores passados e efeitos de choques recentes.  
+    Testado: ARMA(1,1), combinando AR(1) e MA(1).
+\end{itemize}
+
+\subsubsection*{Modelos SARIMA}
+
+SARIMA é uma extensão do ARIMA que incorpora componentes sazonais:
+\(
+\text{SARIMA}(p,d,q)(P,D,Q)_s
+\)
+\begin{itemize}
+    \item \(p,d,q\): ordem AR, diferença integrada e MA para a série não sazonal.
+    \item \(P,D,Q\): ordem AR, diferença e MA para a componente sazonal.
+    \item \(s\): período sazonal (52 semanas, neste caso).
+\end{itemize}
+
+Modelos testados:
+\begin{itemize}
+    \item SARIMA(1,0,0)(1,0,0)[52]: captura tendência anual e autocorrelação simples.
+    \item SARIMA(1,0,1)(1,0,0)[52]: combina AR e MA na série não sazonal com componente sazonal, modelando padrões mais complexos.
+\end{itemize}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lcccc}
+\hline
+\textbf{Modelo} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE (\%)} \\
+\hline
+SARIMA(1,0,1)(1,0,0)[52] & 3.6566 & 3.1336 & 17.3268 \\
+SARIMA(1,0,0)(1,0,0)[52] & 3.6738 & 3.1562 & 17.4426 \\
+ARMA(1,1)                & 3.7949 & 3.2103 & 18.0513 \\
+AR(2)                     & 3.8019 & 3.2230 & 18.1081 \\
+AR(1)                     & 3.8166 & 3.2426 & 18.2096 \\
+AR(3)                     & 3.9055 & 3.2369 & 18.4547 \\
+MA(2)                     & 13.5649 & 11.8699 & 56.9861 \\
+MA(1)                     & 14.4880 & 12.8108 & 61.8514 \\
+\hline
+\end{tabular}
+\caption{Comparação dos modelos de séries temporais com base nas métricas RMSE, MAE e MAPE.}
+\label{tab:comparacao_modelos}
+\end{table}
+
+O modelo que teve menor erro foi o SARIMA(1,0,1)(1,0,0).
+
+\begin{figure}[H]
+    \centering
+    % Primeira figura
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/sarima.png}
+        \caption{Ajuste do melhor modelo - SARIMA(1,0,1)(1,0,0)}
+        \label{fig:sarima_ajuste}
+    \end{minipage}
+    \hfill
+    % Segunda figura
+    \begin{minipage}{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/residuos_sarima.png}
+        \caption{ACF - SARIMA(1,0,1)(1,0,0)}
+        \label{fig:sarima_residuos}
+    \end{minipage}
+\end{figure}
+
+
+\section*{Modelos de suavização exponencial}
+
+\textbf{Modelos de suavização exponencial} atualizam previsões dando mais peso às observações recentes. A versão simples ajusta apenas o nível; a dupla incorpora tendência; a tripla inclui tendência e sazonalidade.
+
+Nos experimentos, o SES funcionou melhor com valores altos de $\alpha$, pois respondeu rápido às mudanças, o ajuste automático teve desempenhho semelhante. No método de Holt, combinações moderadas de $\alpha$ e $\beta$ pioraram a estabilidade e aumentaram os erros; o ajuste automático encontrou um equilíbrio com $\alpha$ alto e $\beta$ baixo. No Holt-Winters, parâmetros moderados tiveram bom desempenho, enquanto valores agressivos aumentaram muito o erro; o ajuste automático teve o melhor MAE.
+
+O melhor desempenho geral foi do Holt-Winters, indicando que nível, tendência e sazonalidade são componentes importantes da série. Nos resíduos, a ACF mostra padrão forte no SES, padrão menor na suavização dupla e comportamento próximo de ruído branco no Holt-Winters, reforçando que o modelo triplo capturou melhor a estrutura temporal.
+
+\begin{figure}[h!]
+\centering
+
+\begin{minipage}{0.35\textwidth}
+\centering
+\begin{tabular}{lcc}
+\hline
+\textbf{Modelo} & \textbf{MAE} & \textbf{RMSE} \\
+\hline
+SES automático            & 2.593354 & 3.321068 \\
+Holt automático           & 2.525490 & 3.321650 \\
+Holt-Winters automático   & 2.344490 & 3.065717 \\
+\hline
+\end{tabular}
+\captionof{Desempenho dos modelos}
+\end{minipage}
+\begin{minipage}{0.35\textwidth}
+\includegraphics[width=\linewidth]{images/exp_acf.png}
+\end{minipage}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.5\linewidth]{images/exp_acf.png}
+% \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+\section*{Análises de resíduos e ajuste dos modelos}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/analise dos residuos.jpeg}
+\end{figure}
+
+A análise realizada teve como objetivo avaliar a qualidade dos resíduos dos modelos de previsão verificando se atendiam a pressupostos essenciais como média zero, normalidade, ausência de autocorrelação e homocedasticidade. Para isso, foi utilizada a classe \textit{ResidualAnalysis}, que aplicou testes estatísticos formais e gerou múltiplos gráficos diagnósticos, permitindo uma avaliação robusta do comportamento residual em oito modelos distintos, incluindo abordagens baselines, estatísticas e de regressão.
+
+Os critérios de avaliação envolveram testes como Anderson-Darling, Ljung-Box, ARCH e a estatística de Durbin-Watson, complementados por métricas descritivas dos resíduos. Os resultados mostraram que o modelo AutoReg\_AR5 apresentou o melhor desempenho geral, com resíduos bem comportados e excelente acurácia preditiva, seguido pelo ExponentialSmoothing, que obteve resultados satisfatórios, embora com leve indício de heterocedasticidade. Em contraste, os modelos baseline apresentaram erros substancialmente maiores, evidenciando sua inadequação para a série analisada.
+
+A integração entre métricas de erro e qualidade dos resíduos permitiu estabelecer um ranking final dos modelos, no qual o AutoReg\_AR5 se destacou por captar eficientemente a estrutura temporal dos dados. Recomenda-se seu uso para previsões futuras, embora o ExponentialSmoothing permaneça como alternativa robusta. Sugere-se ainda considerar uma combinação ponderada entre os dois melhores modelos, de modo a aumentar a estabilidade e robustez das previsões em aplicações práticas.
+
+
 
 \subsection*{Repositório Github}
 
 Link: \href{https://github.com/eduardammag/time-series/tree/main}{Github}
-
-
 
 
 
