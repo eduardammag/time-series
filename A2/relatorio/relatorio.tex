@@ -1,0 +1,269 @@
+\documentclass{article}
+\usepackage[a4paper, margin=2cm]{geometry} % <-- Adiciona esta linha
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{float} % For [H] float placement
+\usepackage{placeins}
+
+\title{Séries temporais}
+\author{Mariana Fernandes Rocha}
+\date{September 2025}
+
+\begin{document}
+
+
+\begin{titlepage}
+    \begin{center}
+
+        \vspace{1cm}
+        \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[width=1.2\textwidth]{images/logo_fgv.png}    
+        \end{minipage}
+        \vspace{2cm}
+
+        \rule{1\textwidth}{0.4pt} \\ % Linha horizontal personalizada
+        \vspace{0.2cm}
+        {\Huge \textbf{Análise de Séries Temporais}} \\
+        \vspace{0.2cm}
+        \vspace{0.5cm}
+        {\Large \textbf{A2 - Séries Temporais}}\\
+        \rule{1\textwidth}{0.4pt} % Linha horizontal personalizada
+
+
+        \vspace{0.5cm}
+        {\Large \textbf{FGV EMAp}} \\
+        \vspace{2cm}
+        
+        
+
+        
+        
+        % % Unidade e curso
+        % {\Large \textbf{FGV EMAp}}\\[2cm]
+        
+        % Autores
+        {\large 
+            \textbf{Ana Júlia Amaro Pereira Rocha} \\ 
+            \textbf{Henrique Borges Carvalho} \\
+            \textbf{Maria Eduarda Mesquita Magalhães}\\
+            \textbf{Mariana Fernandes Rocha} \\
+            \textbf{Paula Eduarda de Lima}}\\[1.5cm]
+        
+        % Informações adicionais
+        {\large 
+            Ciência de Dados e Inteligência Artificial \\ 
+            6º Período}\\[2cm]
+        
+         % Data
+        \vfill
+        {\large Rio de Janeiro, 2025}
+
+        
+    \end{center}
+\end{titlepage}
+\section*{Discussão sobre métricas e métodos de avaliação}
+
+Existem duas vertentes principais de métricas de erro para previsões: métricas absolutas e métricas percentuais. Cada grupo avalia o desempenho de forma diferente e é adequado para contextos distintos.
+
+\textbf{Métricas absolutas} (MAE, MSE, RMSE) comparam previsões e valores reais na escala original da série. São estáveis quando os valores podem ser pequenos ou variar muito ao longo do tempo, pois não dependem de proporções. Têm interpretação direta (“erro médio em unidades da variável”).
+
+\textbf{Métricas percentuais} (MAPE e sMAPE) medem erro relativo, comparando o erro ao tamanho do valor observado. São úteis quando a escala da série muda e quando o interesse é avaliar o erro como proporção do valor real. Porém, distorcem resultados quando há valores muito pequenos, já que o denominador torna o erro artificialmente grande.
+
+Cada vertente oferece uma perspectiva diferente: métricas absolutas focam no desvio real; métricas percentuais focam na relevância relativa do erro.
+
+Dentro do nosso contexto serão usadas métricas absolutas que preservam a escala original dos dados, permitindo comparar diretamente as diferenças entre valores observados e previstos. Essa escolha facilita a interpretação dos resultados, mantendo a coerência com a unidade de medida da variável analisada. Essas métricas permanecem adequadas mesmo com covariáveis, pois não dependem da escala relativa dos valores observados.
+
+Além disso, existem diferentes formas de treinar o modelo para previsões em séries temporais. Os principais tipos são:
+
+\textbf{One-shot}: Gera todos os passos futuros de uma vez. A entrada é a janela histórica, a saída é um vetor contendo todos os pontos de previsão. Essa método evita acúmulo de erro, porém mais difícil de treinar quando o horizonte é grande.
+
+\textbf{Iterativo(One-Step-Ahead Rolling Forecast)}: Prevê um passo por vez. Para prever o passo seguinte, usa como entrada a própria previsão anterior. Gera $\hat{y}(t+1)$, depois usa $y(t+1)$, se disponível ou $\hat{y}(t+1)$, para gerar $\hat{y}(t+2)$, e assim por diante. Uma desvantagem dessa abordagem é o erro que se acumula a cada passo.
+
+\textbf{Lag(Cross Validation)}: O histórico recente vira feature e o próximo valor vira alvo, a cada passo a janela anda também. Um ponto é que é flexível e compatível com qualquer modelo, porém é sensível a escolha dos lags. Com covariáveis, é possível usar valores no mesmo instante da variável-alvo (contemporâneos), conhecidas no presente, e também versões defasadas dessas covariáveis, quando só é conhecido o passado e não o presente.
+
+\section*{Discussão sobre a necessidade de transformação de variáveis}
+
+A série apresenta \textbf{heterocedasticidade}, ou seja, a variância dos valores não é constante — tende a aumentar conforme o nível da série se eleva. Essa característica é comum em séries com crescimento de natureza exponencial ou multiplicativa, e pode comprometer o desempenho de modelos que assumem variância constante.
+
+    Assim, é recomendada a aplicação de uma \textbf{transformação de variáveis}, especialmente a \textit{transformação logarítmica} ou a \textbf{transformação de Box-Cox}. Testamos o uso das duas transformações nos dados, a primeira se saiu melhor na regressão e o desempenho de ambas nos erros dos modelos baselines não teve resultados significativo.
+
+\vspace{1em}
+
+\section*{Discussão sobre a decomposição entre tendência e sazonalidade}
+
+A série apresenta \textbf{tendência de longo prazo} ($T_t$) e \textbf{sazonalidade periódica} ($S_t$). Assim, a série pode ser representada por:
+\[
+y_t = T_t + S_t + R_t
+\]
+onde $R_t$ é o componente residual ou ruído. Então, essa decomposição seria necessária para, principalmente, isolar a tendência estrutural, identificar padrões sazonais, remover o efeito da sazonalidade e analisar o componente residual.
+
+Após a decomposição, a série ajustada sazonalmente mostrou-se muito semelhante à série original o que indica que a tendência sobrepõe a sazonalidade na série temporal em questão, há pouca ou nenhuma sazonalidade.
+
+\begin{figure}[h!]
+    \centering
+    
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/serie_transformada.png}
+        \caption{Série transformada}
+        \label{fig:serie-transformada}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/serie_ajustada_sazonalmente.png}
+        \caption{Série ajustada sazonalmente}
+        \label{fig:serie-ajustada-sazonalmente}
+    \end{minipage}
+
+\end{figure}
+
+\vspace{1em}
+\FloatBarrier
+
+\section*{Análises de resíduos e ajuste dos modelos}
+
+Criamos uma classe chamada \texttt{ResidualAnalysis} que implementa uma análise completa e sistemática de resíduos para modelos de séries temporais, utilizando uma abordagem estatística rigorosa para avaliar a qualidade dos modelos preditivos. O código realiza três tipos principais de análise: testes estatísticos formais, análise gráfica abrangente e diagnóstico comparativo entre modelos.
+
+A análise inicia com testes estatísticos formais que avaliam quatro pressupostos fundamentais: normalidade dos resíduos (teste Anderson-Darling), ausência de autocorrelação (Ljung-Box e Durbin-Watson), homocedasticidade (teste ARCH) e média zero (teste t). Paralelamente, são gerados 12 gráficos diagnósticos que permitem a visualização multidimensional dos resíduos, incluindo ACF/PACF, Q-Q plots, resíduos versus valores ajustados, e distribuições comparativas.
+
+Baseado nas análises que fizemos, podemos observar uma hierarquia clara na qualidade dos modelos:
+
+\begin{itemize}
+    \item \textbf{SARIMAX}: Melhor desempenho geral (pontuação: 1.998) com RMSE mais baixo (0.675)
+    \item \textbf{Regression}: Performance intermediária (pontuação: 0.000) com RMSE moderado (1.404)
+    \item \textbf{Modelos de baseline}: Performance inferior com RMSE elevado (6.300-10.606)
+\end{itemize}
+
+O SARIMAX destacou-se por atender aos critérios de ausência de autocorrelação e média zero, embora apresente problemas de normalidade e heterocedasticidade. Ele foi escolhido, pois o modelo OLS não captava as características variacionais dos dados.
+
+Apesar do bom desempenho do SARIMAX, a falha no teste de normalidade sugere que transformações nos dados ou ajustes na especificação do modelo podem melhorar ainda mais sua performance. Para o modelo de Regression, a presença de autocorrelação indica a necessidade de incorporar componentes autorregressivos ou usar erros padrão robustos.
+
+A análise comparativa demonstra que modelos mais sofisticados que incorporam estrutura temporal (SARIMAX) superam significativamente tanto modelos de regressão convencionais quanto abordagens de baseline, destacando a importância de considerar a dependência temporal na modelagem. As análises completas dos outros modelos podem ser verificadas no arquivo ipynb.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/sarimax_analisado.png}
+    \caption{Análise completa de resíduos do modelo SARIMAX}
+    \label{fig:sarimax_residuals}
+\end{figure}
+
+
+
+\section*{Modelos baselines}
+
+Modelos baseline são abordagens de previsão simples que servem como um ponto de referência para avaliar o desempenho de modelos mais complexos. A sua principal função é estabelecer um limiar de performance: se um modelo sofisticado não conseguir superar um baseline simples, isso sugere que o modelo mais complexo não está capturando bem os padrões da série ou que a série é inerentemente difícil de prever. Para este trabalho, foram implementados cinco modelos baseline, cujos resultados foram comparados utilizando as métricas MAE, RMSE e MAPE.
+
+\subsection*{Mean Method}
+Este é o baseline mais simples, onde a previsão para qualquer período futuro é a média de todos os valores observados no conjunto de treino.
+$$ \hat{y}_{T+h|T} = \bar{y} = \frac{1}{T}\sum_{t=1}^{T}y_t $$
+
+\subsection*{Naive Method}
+Neste método, a previsão para o próximo período é simplesmente o último valor observado.
+$$ \hat{y}_{T+h|T} = y_T $$
+
+\subsection*{Seasonal Naive}
+Uma variação do Naive Method, útil para séries com forte sazonalidade. Ele prevê o valor futuro utilizando a observação do mesmo período no ciclo sazonal anterior. Utilizamos dados semanis considerando sazonalidade anual, o período é $m=52$.
+$$ \hat{y}_{T+h|T} = y_{T+h-m} $$
+
+\subsection*{Drift Method}
+Este método é uma extensão do Naive e é adequado para séries com tendência. Ele extrapola uma linha traçada entre a primeira e a última observação do conjunto de treino. A previsão incorpora uma "inclinação" (drift) média.
+$$ \hat{y}_{T+h|T} = y_T + h \left( \frac{y_T - y_1}{T-1} \right) $$
+
+\subsection*{Média Móvel}
+A previsão é calculada como a média dos últimos $K$ valores observados no conjunto de treino. Este método suaviza flutuações de curto prazo. Para este estudo, foi utilizado $K=4$.
+$$ \hat{y}_{T+h|T} = \frac{1}{K}\sum_{t=T-K+1}^{T}y_t $$
+
+\subsection*{Resultados e Análise}
+Os modelos foram treinados com os primeiros 120 pontos da série e avaliados nos 30 pontos subsequentes. Os resultados obtidos para as métricas de erro no conjunto de teste estão consolidados na Tabela 1.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Modelo} & \textbf{MAE} & \textbf{RMSE} & \textbf{MAPE (\%)} \\
+        \hline
+        Drift & 3.9666 & 4.6585 & 34.40 \\
+        Seasonal Naive & 4.7593 & 5.4027 & 44.01 \\
+        Naive & 4.6803 & 5.4411 & 40.79 \\
+        Média móvel (k=4) & 5.0153 & 5.7318 & 44.20 \\
+        Mean & 7.9639 & 8.4335 & 74.25 \\
+        \hline
+    \end{tabular}
+    \caption{Resultados dos Modelos Baseline no Conjunto de Teste.}
+    \label{tab:baseline_results}
+\end{table}
+
+Analisando a Tabela \ref{tab:baseline_results}, o \textbf{Drift Mathod} apresentou o melhor desempenho em todas as métricas, com um RMSE de 4.6585. Isso sugere que a série possui uma componente de tendência linear que é capturada de forma eficaz por este método. Os modelos Naive e Seasonal Naive tiveram performances intermediárias e muito similares, indicando que tanto a dependência do último ponto quanto a sazonalidade anual são características relevantes, mas secundárias à tendência geral. O Mean Method foi o que obteve o pior resultado, o que era esperado para uma série não estacionária com tendência.
+
+O desempenho do modelo de Drift estabelece, portanto, o principal benchmark a ser superado pelos modelos mais complexos que serão analisados nas próximas seções.
+
+\section*{Modelos de Regressão}
+
+Foi realizada uma análise completa de séries temporais utilizando dois enfoques principais: \textbf{Regressão Linear Múltipla (OLS)} e \textbf{modelos SARIMAX}. O objetivo geral foi capturar componentes de tendência, sazonalidade e autocorrelação, além de comparar o desempenho preditivo entre os modelos.
+
+\subsection*{Regressão Linear Múltipla (OLS)}
+O modelo OLS considerou a variável dependente \texttt{volume}, com preditores que representam a tendência temporal (\texttt{t}), harmônicos sazonais (\texttt{sin1}, \texttt{cos1}, \texttt{sin2}, \texttt{cos2}) e dummies mensais (\texttt{m\_2} a \texttt{m\_12}).  
+O objetivo foi ajustar um modelo interpretável capaz de representar tendência e sazonalidade. O diagnóstico de resíduos incluiu ACF/PACF, histograma, QQ-Plot e teste de Ljung-Box. As métricas de desempenho utilizadas foram \textbf{RMSE} e \textbf{MAPE}, calculadas sobre o conjunto de teste (últimas 12 semanas). Como veremos mais a frente, na análise de resíduos, o modelo OLS não capturou adequadamente a estrutura dos dados.
+
+\begin{table}[h!]
+\centering
+% \caption{Resultados da Regressão OLS}
+\begin{tabular}{ll}
+\hline
+\textbf{Variável} & \textbf{Valor} \\
+\hline
+Dep. Variable       & volume \\
+No. Observations    & 150 \\
+Df Residuals        & 133 \\
+Df Model            & 16 \\
+R-squared           & 0.806 \\
+Adj. R-squared      & 0.783 \\
+F-statistic         & 34.61 \\
+Prob (F-statistic)  & 1.50e-39 \\
+AIC                 & 632.3 \\
+BIC                 & 683.5 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection*{Modelos SARIMAX}
+Como os resultados do OLS não se mostraram promissores, pesquisamos outros modelos de regressão mais robustos que pudessem melhorar o desempenho nesses dados. Os modelos SARIMAX foram empregados para capturar dependências temporais não explicadas pela regressão, incluindo componentes autorregressivos (AR), de média móvel (MA) e sazonais (P, D, Q, m).  
+A seleção de parâmetros foi realizada via \texttt{auto\_arima} e grid search manual. Foram aplicados os mesmos diagnósticos de resíduos e métricas de avaliação (RMSE, MAPE), além de critérios de informação \textbf{AIC} e \textbf{BIC}. O melhor resultado foi
+o SARIMAX (0,1,1) x (0,1,1,52) (AIC=83.05, BIC=87.36)
+
+\subsection*{Comparação e Resultados}
+Os resultados comparativos mostraram que o modelo OLS não o  capturou adequadamente a estrutura dos dados e tenho um erro maior, enquanto o SARIMAX apresenta melhor ajuste em termos de dependência temporal e critérios de informação, como podemos ver pelo gráfico e pelos erros comparados.  
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|c|}
+        \hline
+        \textbf{Modelo}  & \textbf{RMSE} & \textbf{MAPE (\%)} \\
+        \hline
+        OLS & 5.1834 & 0.3303 \\
+        SARIMAX  & 3.2793 & 0.2212 \\
+        \hline
+    \end{tabular}
+    % \caption{Resultados dos Modelos de regressão no Conjunto de Teste.}
+    \label{tab:baseline_results}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{images/forecast_comparison.png}
+    % \caption{Histograma e distribuição dos valores}
+    % \label{fig:placeholder}
+\end{figure}
+
+\subsection*{Repositório Github}
+
+Link: \href{https://github.com/eduardammag/time-series/tree/main}{Github}
+
+
+
+
+
+\end{document}
