@@ -1,6 +1,6 @@
 Análise de Séries Temporais
 
-Este repositório contém o material e o relatório referente ao trabalho de A1 e A2 da disciplina de Séries Temporais.
+Este repositório contém o trabalho de A1 e A2 da disciplina de Séries Temporais.
 
 O projeto tem como objetivo realizar uma análise completa de uma série temporal, abordando desde a escolha e justificativa das métricas de avaliação até a comparação de modelos de previsão.
 
@@ -8,33 +8,21 @@ O projeto tem como objetivo realizar uma análise completa de uma série tempora
 
 O relatório contém as seguintes seções:
 
-* Discussão sobre métricas e métodos de avaliação
+* Discussão sobre métricas e métodos de avaliação: 
 Justificativa do uso de métricas percentuais e absolutas, considerando a escala e distribuição dos dados.
 
-* Discussão sobre a necessidade de transformação de variáveis
-Avaliação da aplicação de transformações logarítmicas ou diferenciações para estabilizar variância.
+* Discussão sobre a necessidade de transformação de variáveis: 
+Avaliação da aplicação de transformações Box-Cox ou diferenciações para estabilizar variância.
 
-* Discussão sobre decomposição entre tendência e sazonalidade
+* Discussão sobre decomposição entre tendência e sazonalidade: 
 Separação das componentes estruturais da série e análise de sua influência no modelo.
 
-* Análise de resíduos e ajuste dos modelos
+* Análise de resíduos e ajuste dos modelos: 
 Verificação da adequação dos modelos por meio dos resíduos.
 
-* Modelos Baseline
+* Modelos Baseline: Implementação dos métodos Mean, Naive, Seasonal Naive, Drift e Média Móvel.
 
-    Implementação dos métodos:
-
-    * Mean
-
-    * Naive
-
-    * Seasonal Naive
-
-    * Drift
-
-    * Média Móvel
-
-* Modelos de Regressão Linear Múltipla
+* Modelos de Regressão Linear Múltipla: 
 Utilizando co-variáveis derivadas de week e volume, avaliadas pelas métricas MAE, RMSE e MAPE.
 
 
